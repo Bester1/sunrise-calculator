@@ -389,6 +389,9 @@
       <label>Spin
         <input id="spin" type="range" min="0" max="100" value="9" aria-label="Globe rotation speed">
       </label>
+      <label>Zoom
+        <input id="zoom" type="range" min="0" max="100" value="0" aria-label="Globe zoom">
+      </label>
     </div>
     <p class="golden-link"><a id="golden-link" href="golden-hour.html?city=lagos">Golden hour</a></p>
     <details class="fold" open>
@@ -579,6 +582,8 @@ let place = { name: "Lagos", lat: 6.5244, lng: 3.3792, exact: true, tz: "Africa/
 let globe = null;
 
 let spinSpeed = 0.0007;
+let zoomControl = 0;
+let zoomHeld = false;
 const CITY_PICK = [
   ["Accra", "accra", 5.55602, -0.1969, "Africa/Accra"],
   ["Addis Ababa", "addis-ababa", 9.02497, 38.74689, "Africa/Addis_Ababa"],
@@ -1125,12 +1130,10 @@ function initGlobe() {
   }
   resize();
   window.addEventListener("resize", resize);
-  var zoomScale = 1;
-  var placedDist = 0;
   var controls = new THREE.OrbitControls(camera, canvas);
   controls.enableRotate = false;
   controls.enablePan = false;
-  controls.enableZoom = true;
+  controls.enableZoom = false;
   controls.enableDamping = false;
   controls.zoomSpeed = 0.7;
   controls.target.set(0, 0.05, 0);
@@ -1188,21 +1191,18 @@ function initGlobe() {
     const TAU = Math.PI * 2;
     orbit = orbit % TAU;
     if (orbit < 0) orbit += TAU;
-    if (placedDist > 0) {
-      var lived = camera.position.distanceTo(controls.target);
-      if (Math.abs(lived - placedDist) > 0.001) zoomScale *= lived / placedDist;
-    }
     var frameDist = fitDistance();
     var nearDist = Math.min(frameDist, fillDistance());
-    var nearScale = nearDist / frameDist;
-    zoomScale = Math.min(1, Math.max(nearScale, zoomScale));
-    var r = frameDist * zoomScale;
+    if (zoomControl < 0) zoomControl = 0;
+    if (zoomControl > 1) zoomControl = 1;
+    var r = frameDist + (nearDist - frameDist) * zoomControl;
+    var zoomSlider = document.getElementById("zoom");
+    if (zoomSlider && !zoomHeld) zoomSlider.value = String(Math.round(zoomControl * 100));
     const base = geoVec(place.lat, place.lng, r);
     const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), orbit);
     camera.position.copy(base.applyQuaternion(q));
     camera.position.y += 0.35;
     camera.lookAt(0, 0.05, 0);
-    var before = camera.position.distanceTo(controls.target);
     var nearCam = geoVec(place.lat, place.lng, nearDist);
     nearCam.y += 0.35;
     var farCam = geoVec(place.lat, place.lng, frameDist);
@@ -1211,27 +1211,35 @@ function initGlobe() {
     controls.minDistance = nearCam.distanceTo(controls.target);
     controls.maxDistance = farCam.distanceTo(controls.target);
     controls.update();
-    var after = camera.position.distanceTo(controls.target);
-    if (before > 0) zoomScale = Math.min(1, Math.max(nearScale, zoomScale * (after / before)));
     camera.updateMatrixWorld(true);
-    placedDist = camera.position.distanceTo(controls.target);
     var camDist = camera.position.length();
-    var sunOrbit = Math.max(1.75, Math.min(frameDist * 0.58, camDist * 0.72));
-    var lagged = s.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit * 0.6);
-    lagged.y = 0;
-    if (lagged.lengthSq() < 1e-8) lagged.set(1, 0, 0);
-    var sunPos = lagged.normalize().multiplyScalar(sunOrbit);
+    var view = camera.position.clone();
+    view.y = 0;
+    if (view.lengthSq() < 1e-8) view.set(0, 0, 1);
+    view.normalize();
+    var right = new THREE.Vector3(-view.z, 0, view.x);
+    var sunAngle = now.getTime() / 1000 * (Math.PI * 2 / 28);
+    var sunPos = new THREE.Vector3();
+    sunPos.addScaledVector(view, -Math.cos(sunAngle));
+    sunPos.addScaledVector(right, Math.sin(sunAngle));
+    sunPos.multiplyScalar(1.9);
     sunBody.position.copy(sunPos);
     sunDir.copy(sunPos).normalize();
-    sunGlow.value = 1;
-    var ndc = sunPos.clone().project(camera);
-    var off = Math.max(0, Math.min(1, (Math.abs(ndc.x) - 0.84) / 0.3));
-    var fade = ndc.z > 1 ? 0 : 1 - off * off * (3 - 2 * off);
-    var camGap = Math.max(0.4, camera.position.distanceTo(sunPos));
-    var baseScale = camGap / 9;
-    sunBody.scale.setScalar(baseScale * (0.6 + 0.4 * fade));
-    sunBody.material.opacity = fade;
-    sunBody.visible = fade > 0.02;
+    var toSun = sunPos.clone().sub(camera.position);
+    var sunDist = toSun.length() || 1;
+    var ray = toSun.multiplyScalar(1 / sunDist);
+    var tCenter = -camera.position.dot(ray);
+    var miss = camera.position.clone().addScaledVector(ray, Math.max(0, tCenter)).length();
+    var seen = Math.max(0, Math.min(1, (miss - 0.92) / 0.62));
+    seen = seen * seen * (3 - 2 * seen);
+    if (sunGlow.shown == null) sunGlow.shown = seen;
+    sunGlow.shown += (seen - sunGlow.shown) * 0.04;
+    sunGlow.value = sunGlow.shown;
+    var camGap = Math.max(0.4, camDist - 1.9);
+    sunBody.scale.setScalar(Math.max(0.62, camGap / 8));
+    sunBody.material.opacity = sunGlow.shown;
+    sunBody.material.depthTest = true;
+    sunBody.visible = sunGlow.shown > 0.02;
     renderer.render(scene, camera);
   }
 
@@ -1244,7 +1252,7 @@ function initGlobe() {
     if (pointerCount > 1) { dragging = false; return; }
     dragging = true;
     dragX = e.clientX;
-    if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
+    if (e.pointerType !== "touch" && canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
   });
   canvas.addEventListener("pointermove", function (e) {
     if (!dragging || pointerCount > 1) return;
@@ -1267,6 +1275,43 @@ function initGlobe() {
   }
   canvas.addEventListener("pointerup", endDrag);
   canvas.addEventListener("pointercancel", endDrag);
+  function touchSpan(touches) {
+    if (!touches || touches.length < 2) return 0;
+    var dx = touches[0].clientX - touches[1].clientX;
+    var dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+  var pinchDist = 0;
+  canvas.addEventListener("touchstart", function (e) {
+    if (e.touches.length >= 2) {
+      dragging = false;
+      dragEdge = 0;
+      pinchDist = touchSpan(e.touches);
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener("touchmove", function (e) {
+    if (e.touches.length >= 2) {
+      var span = touchSpan(e.touches);
+      if (pinchDist > 8 && span > 8) {
+        zoomControl += (span / pinchDist - 1) * 1.4;
+        if (zoomControl < 0) zoomControl = 0;
+        if (zoomControl > 1) zoomControl = 1;
+        pinchDist = span;
+      }
+      dragging = false;
+      dragEdge = 0;
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener("touchend", function () { pinchDist = 0; });
+  canvas.addEventListener("touchcancel", function () { pinchDist = 0; });
+  canvas.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    zoomControl -= e.deltaY * 0.0011;
+    if (zoomControl < 0) zoomControl = 0;
+    if (zoomControl > 1) zoomControl = 1;
+  }, { passive: false });
 
   canvas.style.display = "block";
   document.body.classList.add("globe-on");
@@ -1419,6 +1464,17 @@ if (spin) {
   spin.addEventListener("input", function () {
     spinSpeed = Number(spin.value) / 100 * 0.008;
   });
+}
+const zoom = document.getElementById("zoom");
+if (zoom) {
+  zoom.addEventListener("pointerdown", function (e) { e.stopPropagation(); zoomHeld = true; });
+  zoom.addEventListener("pointerup", function () { zoomHeld = false; });
+  zoom.addEventListener("pointercancel", function () { zoomHeld = false; });
+  zoom.addEventListener("input", function () {
+    zoomHeld = true;
+    zoomControl = Number(zoom.value) / 100;
+  });
+  zoom.addEventListener("change", function () { zoomHeld = false; });
 }
 window.addEventListener("popstate", function () {
   const slug = (location.pathname.match(/sunrise-([a-z0-9-]+)\.html$/) || [])[1];
