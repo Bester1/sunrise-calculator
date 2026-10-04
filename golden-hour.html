@@ -74,6 +74,23 @@
   .note { margin-top: 12px; font-size: 12px; line-height: 1.45; color: rgba(255,255,255,.62); }
   .back { margin-top: 12px; font-size: 13px; }
   .back a, .note a { color: #ffd7a8; }
+
+  details.fold > summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(255,255,255,.7); padding: 8px 0 2px;
+  }
+  details.fold > summary::-webkit-details-marker { display: none; }
+  details.fold > summary::after {
+    content: ""; flex: none; width: 7px; height: 7px;
+    border-right: 2px solid #ffd7a8; border-bottom: 2px solid #ffd7a8;
+    transform: rotate(45deg); margin-top: -3px;
+  }
+  details.fold[open] > summary::after { transform: rotate(-135deg); margin-top: 3px; }
+  @media (min-width: 641px) {
+    details.fold > summary { display: none; }
+  }
   @media (max-width: 640px) {
     .wrap { padding: 12px 10px 24px; }
     h1 { font-size: 24px; }
@@ -90,17 +107,30 @@
     <label>City
       <select id="city-picker" aria-label="City"></select>
     </label>
-    <div class="times">
-      <div class="pill"><span>Morning starts</span><b id="dawn">--:--</b></div>
-      <div class="pill"><span>Sunrise</span><b id="rise">--:--</b></div>
-      <div class="pill"><span>Sunset</span><b id="set">--:--</b></div>
-      <div class="pill"><span>Evening ends</span><b id="dusk">--:--</b></div>
-    </div>
-    <p class="window" id="windows"></p>
-    <p class="note" id="note">Morning runs from civil dawn, when the sun is 6° below the horizon, up to sunrise. Evening runs from sunset down to civil dusk. No need for a globe here.</p>
+    <details class="fold" open>
+      <summary>Today</summary>
+      <div class="times">
+        <div class="pill"><span>Morning starts</span><b id="dawn">--:--</b></div>
+        <div class="pill"><span>Sunrise</span><b id="rise">--:--</b></div>
+        <div class="pill"><span>Sunset</span><b id="set">--:--</b></div>
+        <div class="pill"><span>Evening ends</span><b id="dusk">--:--</b></div>
+      </div>
+      <p class="window" id="windows"></p>
+      <p class="note" id="note">Morning runs from civil dawn, when the sun is 6° below the horizon, up to sunrise. Evening runs from sunset down to civil dusk. No need for a globe here.</p>
+    </details>
     <p class="back"><a id="back" href="index.html">Back to the globe</a></p>
   </section>
 </main>
+<script>
+(function () {
+  var wide = window.matchMedia("(min-width: 641px)");
+  var folds = document.querySelectorAll("details.fold");
+  if (!wide.matches) folds.forEach(function (d) { d.open = false; });
+  wide.addEventListener("change", function () {
+    if (wide.matches) folds.forEach(function (d) { d.open = true; });
+  });
+})();
+</script>
 <script>
 const CITY_PICK = [
   ["Accra", "accra", 5.55602, -0.1969, "Africa/Accra"],

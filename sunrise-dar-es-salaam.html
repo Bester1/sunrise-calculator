@@ -196,6 +196,23 @@
   .rocks-more a { color: #ffd7a8; }
 
 
+
+  details.fold > summary {
+    list-style: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(255,255,255,.7); padding: 8px 0 2px;
+  }
+  details.fold > summary::-webkit-details-marker { display: none; }
+  details.fold > summary::after {
+    content: ""; flex: none; width: 7px; height: 7px;
+    border-right: 2px solid #ffd7a8; border-bottom: 2px solid #ffd7a8;
+    transform: rotate(45deg); margin-top: -3px;
+  }
+  details.fold[open] > summary::after { transform: rotate(-135deg); margin-top: 3px; }
+  @media (min-width: 641px) {
+    details.fold:not(.rocks) > summary { display: none; }
+  }
 @media (max-height: 720px) and (min-width: 641px) {
   h1 { font-size: 20px; }
   .count { font-size: 28px; }
@@ -344,6 +361,9 @@
         <input id="spin" type="range" min="0" max="100" value="9" aria-label="Globe rotation speed">
       </label>
     </div>
+    <p class="golden-link"><a id="golden-link" href="golden-hour.html?city=dar-es-salaam">Golden hour</a></p>
+    <details class="fold" open>
+      <summary>Times</summary>
     <div class="times">
       <div class="pill"><span class="label">Hours to sunrise</span><b class="count" id="count-rise">--:--:--</b></div>
       <div class="pill"><span class="label">Hours to sunset</span><b class="count" id="count-set">--:--:--</b></div>
@@ -354,8 +374,9 @@
     </div>
     <p class="now" id="now"></p>
     <p class="note" id="note">Times and the globe are set to Dar es Salaam. Shown in EAT.</p>
-    <p class="golden-link"><a id="golden-link" href="golden-hour.html?city=dar-es-salaam">Golden hour</a></p>
-    <div class="month">
+    </details>
+    <details class="fold month" open>
+      <summary>This month</summary>
       <h2 id="month-title">This month</h2>
       <div class="month-scroll">
         <table>
@@ -363,8 +384,8 @@
           <tbody id="month-body"></tbody>
         </table>
       </div>
-    </div>
-    <details class="rocks">
+    </details>
+    <details class="fold rocks">
       <summary>Passing rocks</summary>
       <div class="rocks-body">
         <p class="rocks-lead" id="rocks-lead">Checking NASA’s list…</p>
@@ -387,6 +408,16 @@
   </div>
 </details>
 </main>
+<script>
+(function () {
+  var wide = window.matchMedia("(min-width: 641px)");
+  var folds = document.querySelectorAll("details.fold:not(.rocks)");
+  if (!wide.matches) folds.forEach(function (d) { d.open = false; });
+  wide.addEventListener("change", function () {
+    if (wide.matches) folds.forEach(function (d) { d.open = true; });
+  });
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
 const CITIES = [
