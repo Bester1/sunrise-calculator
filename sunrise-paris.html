@@ -1159,45 +1159,22 @@ function initGlobe() {
     camera.lookAt(0, 0.05, 0);
     camera.updateMatrixWorld(true);
     var camDist = fitDistance();
-    var sunOrbit = camDist * 3.1;
-    var right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
-    var forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+    var sunOrbit = Math.max(2.15, camDist * 0.58);
     var lagged = s.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit * 0.6);
-    var side = lagged.dot(right);
-    var ahead = lagged.dot(forward);
-    var earthNdc = new THREE.Vector3(0, 0, 0).project(camera);
-    var rawX = side / (Math.abs(side) + Math.abs(ahead) + 0.001);
-    var ndcX = Math.max(-0.92, Math.min(0.92, rawX));
-    var aim = new THREE.Vector3(ndcX, earthNdc.y, 0.3);
-    aim.unproject(camera);
-    var ray = aim.sub(camera.position).normalize();
-    var b2 = camera.position.dot(ray);
-    var c2 = camera.position.lengthSq() - sunOrbit * sunOrbit;
-    var discrm = b2 * b2 - c2;
-    var tHit = sunOrbit;
-    if (discrm > 0) {
-      var tA = -b2 + Math.sqrt(discrm);
-      var tB = -b2 - Math.sqrt(discrm);
-      tHit = tA > 0.2 ? tA : tB;
-    }
-    var sunPos = camera.position.clone().addScaledVector(ray, tHit);
-    if (ahead <= 0) sunPos.copy(camera.position).normalize().multiplyScalar(sunOrbit);
-    var span = Math.abs(rawX);
-    var edgeT = Math.max(0, Math.min(1, (span - 0.28) / 0.78));
-    var edgeFade = 1 - edgeT * edgeT * (3 - 2 * edgeT);
-    var frontT = Math.max(0, Math.min(1, (ahead + 0.08) / 0.5));
-    var frontFade = frontT * frontT * (3 - 2 * frontT);
-    var fade = edgeFade * frontFade;
-    sunGlow.value += (fade - sunGlow.value) * 0.12;
-    var shown = sunGlow.value;
-    if (ahead > 0) {
-      sunBody.position.copy(sunPos);
-      sunDir.copy(sunPos).normalize();
-    }
-    var baseScale = Math.max(sunPos.length(), 1) / 4.4;
-    sunBody.scale.setScalar(baseScale * (0.45 + 0.55 * shown));
-    sunBody.material.opacity = shown;
-    sunBody.visible = shown > 0.02;
+    lagged.y = 0;
+    if (lagged.lengthSq() < 1e-8) lagged.set(1, 0, 0);
+    var sunPos = lagged.normalize().multiplyScalar(sunOrbit);
+    sunBody.position.copy(sunPos);
+    sunDir.copy(sunPos).normalize();
+    sunGlow.value = 1;
+    var ndc = sunPos.clone().project(camera);
+    var off = Math.max(0, Math.min(1, (Math.abs(ndc.x) - 0.84) / 0.3));
+    var fade = ndc.z > 1 ? 0 : 1 - off * off * (3 - 2 * off);
+    var camGap = Math.max(0.4, camera.position.distanceTo(sunPos));
+    var baseScale = camGap / 9;
+    sunBody.scale.setScalar(baseScale * (0.6 + 0.4 * fade));
+    sunBody.material.opacity = fade;
+    sunBody.visible = fade > 0.02;
     renderer.render(scene, camera);
   }
 
