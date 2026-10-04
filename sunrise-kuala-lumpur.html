@@ -220,17 +220,40 @@
   .card { padding: 10px 10px 8px; }
   .month-scroll { max-height: 168px; }
 }
-@media (max-width: 640px) {
-  .wrap {
-    left: 10px; right: 10px; top: auto; bottom: 8px;
-    width: auto; max-height: 46vh;
+.card-min {
+    display: none;
+    border: 1px solid rgba(255,215,168,.45);
+    background: transparent; color: #ffd7a8;
+    border-radius: 999px; padding: 5px 10px;
+    font: 600 11px Inter, system-ui, sans-serif;
+    letter-spacing: .08em; text-transform: uppercase;
   }
+  .card-head, .card-titles { display: contents; }
+@media (max-width: 640px) {
+  #globe { height: 50vh; }
+  .wrap.is-min ~ #globe, body.scene-full #globe { height: 100vh; }
+  .wrap {
+    left: 0; right: 0; top: 50vh; bottom: 0;
+    width: auto; max-height: none; padding: 0;
+  }
+  .wrap.is-min { top: auto; }
+  .card {
+    height: 100%; overflow: auto;
+    border-radius: 18px 18px 0 0;
+    padding: 10px 12px 14px;
+  }
+  .wrap.is-min .card { height: auto; overflow: hidden; }
+  .card-head {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+  }
+  .card-titles { display: block; min-width: 0; }
+  .card-min { display: inline-flex; flex: none; margin-top: 4px; }
+  .wrap.is-min .card > :not(.card-head) { display: none; }
   .seo { display: none; }
   h1 { font-size: 20px; }
   .count { font-size: 28px; }
   .pill .count { font-size: 16px; }
   .card { padding: 10px 10px 8px; }
-  .month-scroll { max-height: 120px; }
   .month table { font-size: 11px; }
   .month th, .month td { padding: 4px 5px; }
   .rocks summary, .rocks-body { font-size: 11px; }
@@ -249,10 +272,16 @@
 <div class="horizon"></div>
 <main class="wrap">
   <section class="card">
+    <div class="card-head">
+      <div class="card-titles">
     <p class="eyebrow" id="phase">Today</p>
     <h1 id="seo-title">Sunrise Time in Kuala Lumpur Today</h1>
     <p class="city-name" id="city-name">Kuala Lumpur</p>
+      </div>
+      <button class="card-min" type="button" aria-expanded="true">Hide</button>
+    </div>
     <div class="controls">
+
       <label>City
         <select id="city-picker" aria-label="City">
           <option value="accra">Accra</option>
@@ -410,11 +439,15 @@
 </main>
 <script>
 (function () {
-  var wide = window.matchMedia("(min-width: 641px)");
-  var folds = document.querySelectorAll("details.fold:not(.rocks)");
-  if (!wide.matches) folds.forEach(function (d) { d.open = false; });
-  wide.addEventListener("change", function () {
-    if (wide.matches) folds.forEach(function (d) { d.open = true; });
+  var btn = document.querySelector(".card-min");
+  var wrap = document.querySelector(".wrap");
+  if (!btn || !wrap) return;
+  btn.addEventListener("click", function () {
+    var slim = wrap.classList.toggle("is-min");
+    document.body.classList.toggle("scene-full", slim);
+    btn.setAttribute("aria-expanded", slim ? "false" : "true");
+    btn.textContent = slim ? "Show" : "Hide";
+    window.dispatchEvent(new Event("resize"));
   });
 })();
 </script>
@@ -1049,8 +1082,17 @@ function initGlobe() {
   let dragging = false;
   let dragX = 0;
   let dragEdge = 0;
+  function viewSize() {
+    var narrow = window.matchMedia("(max-width: 640px)").matches;
+    var wrap = document.querySelector(".wrap");
+    var slim = wrap && wrap.classList.contains("is-min");
+    var h = window.innerHeight;
+    if (narrow && !slim) h = Math.max(180, Math.round(window.innerHeight * 0.5));
+    return { w: window.innerWidth, h: h };
+  }
   function fitDistance() {
-    var w = window.innerWidth, h = window.innerHeight;
+    var size = viewSize();
+    var w = size.w, h = size.h;
     var aspect = Math.max(0.2, w / Math.max(1, h));
     var vHalf = camera.fov * Math.PI / 360;
     var hHalf = Math.atan(Math.tan(vHalf) * aspect);
@@ -1060,7 +1102,8 @@ function initGlobe() {
     return Math.max(4.4, distV, distH) * 1.08;
   }
   function resize() {
-    const w = window.innerWidth, h = window.innerHeight;
+    var size = viewSize();
+    const w = size.w, h = size.h;
     renderer.setSize(w, h, true);
     camera.aspect = w / h;
     camera.updateProjectionMatrix();

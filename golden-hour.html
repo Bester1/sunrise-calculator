@@ -91,8 +91,27 @@
   @media (min-width: 641px) {
     details.fold > summary { display: none; }
   }
+
+  .card-min {
+    display: none;
+    border: 1px solid rgba(255,215,168,.45);
+    background: transparent; color: #ffd7a8;
+    border-radius: 999px; padding: 5px 10px;
+    font: 600 11px Inter, system-ui, sans-serif;
+    letter-spacing: .08em; text-transform: uppercase;
+  }
+  .card-head, .card-titles { display: contents; }
   @media (max-width: 640px) {
-    .wrap { padding: 12px 10px 24px; }
+    .wrap { padding: 0; align-items: stretch; }
+    .card {
+      width: 100%; min-height: 50vh; margin-top: auto;
+      border-radius: 18px 18px 0 0;
+    }
+    .card.is-min { min-height: 0; }
+    .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .card-titles { display: block; }
+    .card-min { display: inline-flex; flex: none; margin-top: 4px; }
+    .card.is-min > :not(.card-head) { display: none; }
     h1 { font-size: 24px; }
     .pill b { font-size: 18px; }
   }
@@ -101,9 +120,14 @@
 <body>
 <main class="wrap">
   <section class="card">
-    <p class="eyebrow">Civil twilight</p>
-    <h1>Golden hour</h1>
-    <p class="city-name" id="city-name">Johannesburg</p>
+    <div class="card-head">
+      <div class="card-titles">
+        <p class="eyebrow">Civil twilight</p>
+        <h1>Golden hour</h1>
+        <p class="city-name" id="city-name">Johannesburg</p>
+      </div>
+      <button class="card-min" type="button" aria-expanded="true">Hide</button>
+    </div>
     <label>City
       <select id="city-picker" aria-label="City"></select>
     </label>
@@ -123,11 +147,13 @@
 </main>
 <script>
 (function () {
-  var wide = window.matchMedia("(min-width: 641px)");
-  var folds = document.querySelectorAll("details.fold");
-  if (!wide.matches) folds.forEach(function (d) { d.open = false; });
-  wide.addEventListener("change", function () {
-    if (wide.matches) folds.forEach(function (d) { d.open = true; });
+  var btn = document.querySelector(".card-min");
+  var card = document.querySelector(".card");
+  if (!btn || !card) return;
+  btn.addEventListener("click", function () {
+    var slim = card.classList.toggle("is-min");
+    btn.setAttribute("aria-expanded", slim ? "false" : "true");
+    btn.textContent = slim ? "Show" : "Hide";
   });
 })();
 </script>
