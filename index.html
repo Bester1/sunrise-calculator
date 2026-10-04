@@ -812,11 +812,12 @@ function initGlobe() {
   scene.add(new THREE.AmbientLight(0x8aa0c8, 0.08));
 
   const sunDir = new THREE.Vector3(1, 0, 0);
+  const sunGlow = { value: 1 };
   const earthMat = new THREE.ShaderMaterial({
     uniforms: {
       dayMap: { value: null },
       nightMap: { value: null },
-      sunDir: { value: sunDir },
+      sunDir: { value: sunDir }, sunFade: sunGlow,
       hasDay: { value: 0 },
       hasNight: { value: 0 }
     },
@@ -833,6 +834,7 @@ function initGlobe() {
       "uniform sampler2D dayMap;",
       "uniform sampler2D nightMap;",
       "uniform vec3 sunDir;",
+      "uniform float sunFade;",
       "uniform float hasDay;",
       "uniform float hasNight;",
       "varying vec2 vUv;",
@@ -858,6 +860,7 @@ function initGlobe() {
       "  col = mix(col, ocean, water);",
       "  float term = exp(-ndl * ndl * 28.0);",
       "  col += vec3(1.0, 0.48, 0.18) * term * 0.22 * (1.0 - water);",
+      "  col = mix(nightCol, col, sunFade);",
       "  gl_FragColor = vec4(col, 1.0);",
       "}"
     ].join("\n")
@@ -873,7 +876,7 @@ function initGlobe() {
     side: THREE.BackSide,
     transparent: true,
     depthWrite: false,
-    uniforms: { sunDir: { value: sunDir }, fullAmt: { value: 0.5 } },
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow, fullAmt: { value: 0.5 } },
     vertexShader: [
       "varying vec3 vNormal;",
       "void main() {",
@@ -884,9 +887,11 @@ function initGlobe() {
     fragmentShader: [
       "varying vec3 vNormal;",
       "uniform vec3 sunDir;",
+      "uniform float sunFade;",
       "void main() {",
       "  float rim = pow(0.62 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2);",
       "  float lit = smoothstep(-0.2, 0.6, dot(normalize(vNormal), normalize(sunDir)));",
+      "  lit *= sunFade;",
       "  vec3 glow = mix(vec3(0.25, 0.35, 0.7), vec3(0.55, 0.75, 1.0), lit);",
       "  gl_FragColor = vec4(glow, clamp(rim, 0.0, 1.0) * 0.9);",
       "}"
@@ -895,7 +900,7 @@ function initGlobe() {
   scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.08, 64, 64), atmosMat));
 
   const moonMat = new THREE.ShaderMaterial({
-    uniforms: { sunDir: { value: sunDir }, fullAmt: { value: 0.5 } },
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow, fullAmt: { value: 0.5 } },
     vertexShader: [
       "varying vec3 vNormal;",
       "varying vec3 vPos;",
@@ -907,6 +912,7 @@ function initGlobe() {
     ].join("\n"),
     fragmentShader: [
       "uniform vec3 sunDir;",
+      "uniform float sunFade;",
       "uniform float fullAmt;",
       "varying vec3 vNormal;",
       "varying vec3 vPos;",
@@ -932,6 +938,8 @@ function initGlobe() {
       "  albedo *= mix(0.92, 1.05, grain);",
       "  albedo = mix(albedo, albedo * vec3(0.55, 0.54, 0.50), pits);",
       "  float sunAmt = clamp(ndl, 0.0, 1.0);",
+      "  lit *= sunFade;",
+      "  sunAmt *= sunFade;",
       "  vec3 col = albedo * vec3(1.0, 0.96, 0.88) * (0.05 + lit * (0.35 + 0.75 * sunAmt));",
       "  col += vec3(0.055, 0.065, 0.095) * (1.0 - lit);",
       "  col += vec3(1.0, 0.93, 0.75) * pow(sunAmt, 6.0) * 0.18;",
@@ -944,7 +952,7 @@ function initGlobe() {
   scene.add(moon);
 
   const jupiterMat = new THREE.ShaderMaterial({
-    uniforms: { sunDir: { value: sunDir } },
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow },
     vertexShader: [
       "varying vec3 vNormal;",
       "varying vec3 vPos;",
@@ -956,11 +964,13 @@ function initGlobe() {
     ].join("\n"),
     fragmentShader: [
       "uniform vec3 sunDir;",
+      "uniform float sunFade;",
       "varying vec3 vNormal;",
       "varying vec3 vPos;",
       "void main() {",
       "  vec3 N = normalize(vNormal);",
       "  float lit = smoothstep(-0.08, 0.35, dot(N, normalize(sunDir)));",
+      "  lit *= sunFade;",
       "  float lat = vPos.y / 0.20;",
       "  float bands = sin(lat * 18.0);",
       "  float bands2 = sin(lat * 9.0 + 0.7);",
@@ -984,7 +994,7 @@ function initGlobe() {
   scene.add(jupiter);
 
   const saturnMat = new THREE.ShaderMaterial({
-    uniforms: { sunDir: { value: sunDir } },
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow },
     vertexShader: [
       "varying vec3 vNormal;",
       "void main() {",
@@ -994,9 +1004,11 @@ function initGlobe() {
     ].join("\n"),
     fragmentShader: [
       "uniform vec3 sunDir;",
+      "uniform float sunFade;",
       "varying vec3 vNormal;",
       "void main() {",
       "  float lit = smoothstep(-0.08, 0.4, dot(normalize(vNormal), normalize(sunDir)));",
+      "  lit *= sunFade;",
       "  vec3 gold = vec3(0.91, 0.78, 0.46);",
       "  gl_FragColor = vec4(gold * (0.10 + lit * 0.95), 1.0);",
       "}"
@@ -1008,7 +1020,7 @@ function initGlobe() {
     side: THREE.DoubleSide,
     transparent: true,
     depthWrite: false,
-    uniforms: { sunDir: { value: sunDir } },
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow },
     vertexShader: [
       "varying vec3 vPos;",
       "varying vec3 vNormal;",
@@ -1020,6 +1032,7 @@ function initGlobe() {
     ].join("\n"),
     fragmentShader: [
       "uniform vec3 sunDir;",
+      "uniform float sunFade;",
       "varying vec3 vPos;",
       "varying vec3 vNormal;",
       "void main() {",
@@ -1031,6 +1044,7 @@ function initGlobe() {
       "  vec3 col = mix(gold, icy, grain);",
       "  col = mix(col, vec3(0.16, 0.12, 0.08), cassini);",
       "  float lit = smoothstep(-0.2, 0.45, dot(normalize(vNormal), normalize(sunDir)));",
+      "  lit *= sunFade;",
       "  float alpha = mix(0.88, 0.10, cassini);",
       "  gl_FragColor = vec4(col * (0.28 + lit * 0.75), alpha);",
       "}"
@@ -1043,7 +1057,7 @@ function initGlobe() {
 
   const sunBody = new THREE.Mesh(
     new THREE.SphereGeometry(0.22, 32, 32),
-    new THREE.MeshBasicMaterial({ color: 0xffb000 })
+    new THREE.MeshBasicMaterial({ color: 0xffb000, transparent: true, opacity: 1, depthWrite: false })
   );
   scene.add(sunBody);
 
@@ -1156,7 +1170,8 @@ function initGlobe() {
     var side = lagged.dot(right);
     var ahead = lagged.dot(forward);
     var earthNdc = new THREE.Vector3(0, 0, 0).project(camera);
-    var ndcX = Math.max(-0.92, Math.min(0.92, side / (Math.abs(side) + Math.abs(ahead) + 0.001)));
+    var rawX = side / (Math.abs(side) + Math.abs(ahead) + 0.001);
+    var ndcX = Math.max(-0.92, Math.min(0.92, rawX));
     var aim = new THREE.Vector3(ndcX, earthNdc.y, 0.3);
     aim.unproject(camera);
     var ray = aim.sub(camera.position).normalize();
@@ -1171,20 +1186,22 @@ function initGlobe() {
     }
     var sunPos = camera.position.clone().addScaledVector(ray, tHit);
     if (ahead <= 0) sunPos.copy(camera.position).normalize().multiplyScalar(sunOrbit);
-    sunDir.copy(sunPos).normalize();
-    sunBody.position.copy(sunPos);
-    sunBody.scale.setScalar(Math.max(sunPos.length(), 1) / 4.4);
-    var toSunX = sunBody.position.x - camera.position.x;
-    var toSunY = sunBody.position.y - camera.position.y;
-    var toSunZ = sunBody.position.z - camera.position.z;
-    var fwdX = -camera.position.x;
-    var fwdY = 0.05 - camera.position.y;
-    var fwdZ = -camera.position.z;
-    var toSunLen = Math.hypot(toSunX, toSunY, toSunZ) || 1;
-    var fwdLen = Math.hypot(fwdX, fwdY, fwdZ) || 1;
-    var facing = (toSunX * fwdX + toSunY * fwdY + toSunZ * fwdZ) / (toSunLen * fwdLen);
-    var showSun = facing > 0.5;
-    sunBody.visible = showSun;
+    var span = Math.abs(rawX);
+    var edgeT = Math.max(0, Math.min(1, (span - 0.28) / 0.78));
+    var edgeFade = 1 - edgeT * edgeT * (3 - 2 * edgeT);
+    var frontT = Math.max(0, Math.min(1, (ahead + 0.08) / 0.5));
+    var frontFade = frontT * frontT * (3 - 2 * frontT);
+    var fade = edgeFade * frontFade;
+    sunGlow.value += (fade - sunGlow.value) * 0.12;
+    var shown = sunGlow.value;
+    if (ahead > 0) {
+      sunBody.position.copy(sunPos);
+      sunDir.copy(sunPos).normalize();
+    }
+    var baseScale = Math.max(sunPos.length(), 1) / 4.4;
+    sunBody.scale.setScalar(baseScale * (0.45 + 0.55 * shown));
+    sunBody.material.opacity = shown;
+    sunBody.visible = shown > 0.02;
     renderer.render(scene, camera);
   }
 
