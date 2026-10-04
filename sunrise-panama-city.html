@@ -1213,33 +1213,40 @@ function initGlobe() {
     controls.update();
     camera.updateMatrixWorld(true);
     var camDist = camera.position.length();
-    var view = camera.position.clone();
-    view.y = 0;
-    if (view.lengthSq() < 1e-8) view.set(0, 0, 1);
-    view.normalize();
-    var right = new THREE.Vector3(-view.z, 0, view.x);
+    var screenRight = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
+    var screenUp = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+    var screenForward = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 2).multiplyScalar(-1);
+    function levelDir(v) {
+      var n = v.clone().addScaledVector(screenUp, -v.dot(screenUp));
+      if (n.lengthSq() < 1e-8) n.copy(screenRight);
+      return n.normalize();
+    }
+    var side = levelDir(screenRight);
+    var ahead = levelDir(camera.position.clone().negate());
     var sunAngle = now.getTime() / 1000 * (Math.PI * 2 / 28);
+    var sunRadius = Math.max(camDist + 1.4, camDist * 1.65);
     var sunPos = new THREE.Vector3();
-    sunPos.addScaledVector(view, -Math.cos(sunAngle));
-    sunPos.addScaledVector(right, Math.sin(sunAngle));
-    sunPos.multiplyScalar(1.9);
+    sunPos.addScaledVector(side, -Math.cos(sunAngle));
+    sunPos.addScaledVector(ahead, Math.sin(sunAngle));
+    sunPos.multiplyScalar(sunRadius);
     sunBody.position.copy(sunPos);
     sunDir.copy(sunPos).normalize();
     var toSun = sunPos.clone().sub(camera.position);
     var sunDist = toSun.length() || 1;
-    var ray = toSun.multiplyScalar(1 / sunDist);
+    var facing = toSun.dot(screenForward) / sunDist;
+    var ray = toSun.clone().multiplyScalar(1 / sunDist);
     var tCenter = -camera.position.dot(ray);
     var miss = camera.position.clone().addScaledVector(ray, Math.max(0, tCenter)).length();
     var seen = Math.max(0, Math.min(1, (miss - 0.92) / 0.62));
     seen = seen * seen * (3 - 2 * seen);
+    if (facing < 0.25) seen *= Math.max(0, facing / 0.25);
     if (sunGlow.shown == null) sunGlow.shown = seen;
     sunGlow.shown += (seen - sunGlow.shown) * 0.04;
     sunGlow.value = sunGlow.shown;
-    var camGap = Math.max(0.4, camDist - 1.9);
-    sunBody.scale.setScalar(Math.max(0.62, camGap / 8));
+    sunBody.scale.setScalar(Math.max(0.45, sunDist / 9));
     sunBody.material.opacity = sunGlow.shown;
     sunBody.material.depthTest = true;
-    sunBody.visible = sunGlow.shown > 0.02;
+    sunBody.visible = facing > 0 && sunGlow.shown > 0.02;
     renderer.render(scene, camera);
   }
 
