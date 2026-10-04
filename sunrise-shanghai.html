@@ -1145,11 +1145,12 @@ function initGlobe() {
     camera.lookAt(0, 0.05, 0);
     camera.updateMatrixWorld(true);
     var camDist = fitDistance();
-    var sunOrbit = camDist * 1.7;
+    var sunOrbit = camDist * 3.1;
     var right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
     var forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
-    var side = s.dot(right);
-    var ahead = s.dot(forward);
+    var lagged = s.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit * 0.6);
+    var side = lagged.dot(right);
+    var ahead = lagged.dot(forward);
     var earthNdc = new THREE.Vector3(0, 0, 0).project(camera);
     var ndcX = Math.max(-0.92, Math.min(0.92, side / (Math.abs(side) + Math.abs(ahead) + 0.001)));
     var aim = new THREE.Vector3(ndcX, earthNdc.y, 0.3);
@@ -1168,7 +1169,7 @@ function initGlobe() {
     if (ahead <= 0) sunPos.copy(camera.position).normalize().multiplyScalar(sunOrbit);
     sunDir.copy(sunPos).normalize();
     sunBody.position.copy(sunPos);
-    sunBody.scale.setScalar(Math.max(sunPos.length(), 1) / 2.2);
+    sunBody.scale.setScalar(Math.max(sunPos.length(), 1) / 4.4);
     var toSunX = sunBody.position.x - camera.position.x;
     var toSunY = sunBody.position.y - camera.position.y;
     var toSunZ = sunBody.position.z - camera.position.z;
