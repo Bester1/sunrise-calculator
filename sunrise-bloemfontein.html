@@ -452,6 +452,7 @@
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="orbit-controls.js"></script>
 <script>
 const CITIES = [
   ["Johannesburg", -26.2041, 28.0473],
@@ -1124,6 +1125,16 @@ function initGlobe() {
   }
   resize();
   window.addEventListener("resize", resize);
+  var zoomScale = 1;
+  var controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableRotate = false;
+  controls.enablePan = false;
+  controls.enableZoom = true;
+  controls.enableDamping = false;
+  controls.zoomSpeed = 0.7;
+  controls.target.set(0, 0.05, 0);
+  controls.touches.ONE = THREE.TOUCH.ROTATE;
+  controls.touches.TWO = THREE.TOUCH.DOLLY_PAN;
 
   function frame(now) {
     const sun = solarPoint(now);
@@ -1152,13 +1163,22 @@ function initGlobe() {
     const TAU = Math.PI * 2;
     orbit = orbit % TAU;
     if (orbit < 0) orbit += TAU;
-    const base = geoVec(place.lat, place.lng, fitDistance());
+    var frameDist = fitDistance();
+    var r = frameDist * zoomScale;
+    const base = geoVec(place.lat, place.lng, r);
     const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), orbit);
     camera.position.copy(base.applyQuaternion(q));
     camera.position.y += 0.35;
     camera.lookAt(0, 0.05, 0);
+    var before = camera.position.distanceTo(controls.target);
+    controls.target.set(0, 0.05, 0);
+    controls.minDistance = before / zoomScale;
+    controls.maxDistance = before / zoomScale * 2.25;
+    controls.update();
+    var after = camera.position.distanceTo(controls.target);
+    if (before > 0) zoomScale = Math.min(2.25, Math.max(1, zoomScale * (after / before)));
     camera.updateMatrixWorld(true);
-    var camDist = fitDistance();
+    var camDist = frameDist;
     var sunOrbit = Math.max(2.15, camDist * 0.58);
     var lagged = s.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit * 0.6);
     lagged.y = 0;
@@ -1179,14 +1199,18 @@ function initGlobe() {
   }
 
   canvas.style.touchAction = "none";
+  var activePointers = {};
+  var pointerCount = 0;
   canvas.addEventListener("pointerdown", function (e) {
     if (e.button !== undefined && e.button !== 0) return;
+    if (!activePointers[e.pointerId]) { activePointers[e.pointerId] = 1; pointerCount++; }
+    if (pointerCount > 1) { dragging = false; return; }
     dragging = true;
     dragX = e.clientX;
     if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
   });
   canvas.addEventListener("pointermove", function (e) {
-    if (!dragging) return;
+    if (!dragging || pointerCount > 1) return;
     var dx = e.clientX - dragX;
     if (e.pointerType !== "touch" && e.movementX) dx = e.movementX;
     orbit += dx * 0.01;
@@ -1196,7 +1220,14 @@ function initGlobe() {
     else if (e.clientX >= window.innerWidth - margin) dragEdge = 1;
     else dragEdge = 0;
   });
-  function endDrag() { dragging = false; dragEdge = 0; }
+  function endDrag(e) {
+    if (e && e.pointerId != null && activePointers[e.pointerId]) {
+      delete activePointers[e.pointerId];
+      pointerCount--;
+    }
+    dragging = false;
+    dragEdge = 0;
+  }
   canvas.addEventListener("pointerup", endDrag);
   canvas.addEventListener("pointercancel", endDrag);
 
