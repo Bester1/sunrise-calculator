@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://sunrise.local/sunrise-delhi.html">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    color: #f4f1ea;
+    overflow: hidden;
+    background: #070b16;
+  }
+  #sky {
+    position: fixed; inset: 0;
+    transition: background 1.2s linear;
+  }
+  #globe {
+    position: fixed; left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    z-index: 1;
+    display: none;
+    touch-action: none;
+  }
+  .stars {
+    position: fixed; inset: 0; pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.8) 50%, transparent 51%),
+      radial-gradient(1px 1px at 28% 42%, rgba(255,255,255,.55) 50%, transparent 51%),
+      radial-gradient(1.4px 1.4px at 72% 22%, rgba(255,255,255,.7) 50%, transparent 51%),
+      radial-gradient(1px 1px at 84% 58%, rgba(255,255,255,.45) 50%, transparent 51%),
+      radial-gradient(1px 1px at 46% 12%, rgba(255,255,255,.6) 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 61% 70%, rgba(255,255,255,.4) 50%, transparent 51%),
+      radial-gradient(1px 1px at 8% 76%, rgba(255,255,255,.5) 50%, transparent 51%);
+    opacity: 0;
+    transition: opacity 1.2s linear;
+    z-index: 1;
+  }
+  body.globe-on .stars { opacity: .55; z-index: 0; }
+  .glow {
+    position: fixed; width: 46vw; height: 46vw; border-radius: 50%;
+    filter: blur(40px); opacity: .45; pointer-events: none;
+    background: radial-gradient(circle, rgba(255,186,120,.85), transparent 68%);
+    transform: translate(-50%, -50%);
+    transition: opacity 1s linear;
+  }
+  #sun {
+    position: fixed; width: 86px; height: 86px; border-radius: 50%;
+    margin: -43px 0 0 -43px;
+    background: radial-gradient(circle at 35% 35%, #fff7e6, #ffd27a 42%, #ff8a3d 78%);
+    box-shadow: 0 0 40px 12px rgba(255, 176, 90, .55), 0 0 120px 30px rgba(255, 120, 60, .25);
+    transition: left .8s linear, top .8s linear;
+    z-index: 2;
+  }
+  .horizon {
+    position: fixed; left: 0; right: 0; bottom: 18vh; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
+    z-index: 2;
+  }
+  body.globe-on #sun, body.globe-on .glow, body.globe-on .horizon { display: none; }
+  .wrap {
+    position: fixed; left: 18px; top: 18px; z-index: 6;
+    width: min(360px, calc(100vw - 36px));
+    max-height: calc(100vh - 24px);
+    overflow: auto;
+    pointer-events: auto;
+  }
+  .eyebrow {
+    letter-spacing: .18em; text-transform: uppercase;
+    font-size: 11px; color: rgba(255,255,255,.72); font-weight: 500;
+  }
+  h1 {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 600; font-size: 26px;
+    margin: 2px 0 8px; letter-spacing: -0.03em; line-height: 1.1;
+  }
+  .card {
+    width: 100%;
+    background: rgba(10, 14, 26, .34);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 20px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.28);
+    padding: 14px 14px 12px;
+    text-align: left;
+    position: relative;
+    background: rgba(10, 14, 26, .82);
+    pointer-events: auto;
+  }
+  .card::before {
+    content: "";
+    position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    pointer-events: none;
+  }
+  .label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: rgba(255,255,255,.7); }
+  .count {
+    font-family: "Space Grotesk", sans-serif;
+    font-weight: 700; font-size: 36px;
+    letter-spacing: -0.04em; line-height: 1; margin: 4px 0 2px;
+    text-shadow: 0 0 18px rgba(255, 196, 120, .35);
+  }
+  .pill .count { font-size: 22px; margin: 2px 0 0; display: block; }
+  .sub { color: rgba(255,255,255,.78); font-size: 13px; }
+  .times {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px;
+  }
+  .pill .label { letter-spacing: .04em; }
+  .pill {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px; padding: 8px 10px;
+  }
+  .pill b {
+    display: block; margin-top: 2px;
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 20px; font-weight: 600;
+  }
+  .now { margin-top: 10px; font-size: 13px; font-variant-numeric: tabular-nums; color: rgba(255,255,255,.8); }
+  .note { margin-top: 6px; font-size: 11px; color: rgba(255,255,255,.55); line-height: 1.35; }
+  .city-name { font-size: 14px; color: rgba(255,255,255,.82); margin: 0 0 8px; }
+
+  .controls { display: grid; gap: 8px; margin: 8px 0 2px; }
+  .controls label {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.7);
+  }
+  .controls, .controls select, .controls input[type="range"] {
+    pointer-events: auto; position: relative; z-index: 2;
+  }
+  .controls select, .controls input[type="range"] { width: 62%; touch-action: auto; }
+  .controls select {
+    background: #162033; color: #ffffff;
+    border: 1px solid rgba(255,255,255,.16); border-radius: 10px;
+    padding: 6px 8px; font: 13px Inter, system-ui, sans-serif;
+    letter-spacing: 0; text-transform: none;
+  }
+  h1 { font-size: 22px; }
+  .seo {
+    position: fixed; right: 18px; bottom: 18px; z-index: 4;
+    width: min(340px, calc(100vw - 360px));
+    max-width: calc(100vw - 36px);
+    background: rgba(10, 14, 26, .55);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 16px;
+    color: #f4f1ea;
+    pointer-events: auto;
+  }
+  .seo summary { cursor: pointer; padding: 12px 14px; font-size: 13px; letter-spacing: .04em; }
+  .seo-body { max-height: 46vh; overflow: auto; padding: 0 14px 14px; font-size: 13px; line-height: 1.45; }
+  .seo-body a { color: #ffd7a8; }
+  .seo-body h2 { font-family: "Space Grotesk", sans-serif; font-size: 15px; margin: 12px 0 6px; }
+  .seo-body ul, .seo-body ol { padding-left: 18px; }
+  .seo-body li { margin: 4px 0; }
+
+  .month { margin-top: 12px; border-top: 1px solid rgba(255,255,255,.12); padding-top: 10px; }
+  .month h2 {
+    font-family: "Space Grotesk", sans-serif;
+    font-size: 12px; font-weight: 500; letter-spacing: .1em;
+    text-transform: uppercase; margin: 0 0 8px; color: rgba(255,255,255,.7);
+  }
+  .month-scroll {
+    max-height: 220px; overflow: auto; border-radius: 10px;
+    border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.03);
+  }
+  .month table { width: 100%; border-collapse: collapse; font-size: 12px; font-variant-numeric: tabular-nums; }
+  .month th, .month td { padding: 5px 7px; text-align: right; white-space: nowrap; }
+  .month th:first-child, .month td:first-child { text-align: left; }
+  .month th {
+    position: sticky; top: 0; z-index: 1;
+    background: #141a2a; color: rgba(255,255,255,.62);
+    font-weight: 500; font-size: 10px; letter-spacing: .06em; text-transform: uppercase;
+  }
+  .month td { border-top: 1px solid rgba(255,255,255,.06); color: rgba(244,241,234,.92); }
+  .month tr.today td { background: rgba(255,176,90,.18); color: #ffe7c4; }
+
+  .rocks { margin-top: 10px; border-top: 1px solid rgba(255,255,255,.12); padding-top: 8px; }
+  .rocks summary {
+    cursor: pointer; font-size: 12px; letter-spacing: .1em; text-transform: uppercase;
+    color: rgba(255,255,255,.7);
+  }
+  .rocks-body { padding-top: 8px; font-size: 12px; line-height: 1.45; color: rgba(244,241,234,.92); }
+  .rocks-lead, .rocks-pha { margin: 0 0 8px; color: rgba(255,255,255,.78); }
+  .rocks-list { list-style: none; margin: 0 0 8px; padding: 0; }
+  .rocks-list li { padding: 6px 0; border-top: 1px solid rgba(255,255,255,.08); }
+  .rocks-list b { font-family: "Space Grotesk", sans-serif; font-weight: 600; color: #ffe7c4; }
+  .rocks-more { margin: 0; }
+  .rocks-more a { color: #ffd7a8; }
+
+
+@media (max-width: 640px), (max-height: 720px) {
+  .wrap { left: 10px; top: 10px; width: min(360px, calc(100vw - 20px)); }
+  h1 { font-size: 20px; }
+  .count { font-size: 28px; }
+  .pill .count { font-size: 16px; }
+  .card { padding: 10px 10px 8px; }
+  .month-scroll { max-height: 168px; }
+  .month table { font-size: 11px; }
+  .month th, .month td { padding: 4px 5px; }
+  .rocks summary, .rocks-body { font-size: 11px; }
+}
+</style>
+<title>Sunrise Time in Delhi Today</title>
+<meta name="description" content="Sunrise and sunset in Delhi today, 4 October 2026, on a day-and-night Earth: sunrise 06:15, sunset 18:04 (IST).">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What time is sunrise in Delhi today?", "acceptedAnswer": {"@type": "Answer", "text": "On 4 October 2026 sunrise in Delhi is 06:15 (IST)."}}, {"@type": "Question", "name": "What time is sunset in Delhi today?", "acceptedAnswer": {"@type": "Answer", "text": "On 4 October 2026 sunset in Delhi is 18:04 (IST)."}}, {"@type": "Question", "name": "How long is the day in Delhi?", "acceptedAnswer": {"@type": "Answer", "text": "On 4 October 2026 the day in Delhi lasts 11 hours 49 minutes, from sunrise at 06:15 to sunset at 18:04 (IST)."}}]}</script>
+</head>
+<body>
+<div id="sky"></div>
+<canvas id="globe"></canvas>
+<div class="stars" id="stars"></div>
+<div class="glow" id="glow"></div>
+<div id="sun"></div>
+<div class="horizon"></div>
+<main class="wrap">
+  <section class="card">
+    <p class="eyebrow" id="phase">Today</p>
+    <h1 id="seo-title">Sunrise Time in Delhi Today</h1>
+    <p class="city-name" id="city-name">Delhi</p>
+    <div class="controls">
+      <label>City
+        <select id="city-picker" aria-label="City">
+          <option value="accra">Accra</option>
+          <option value="addis-ababa">Addis Ababa</option>
+          <option value="algiers">Algiers</option>
+          <option value="amsterdam">Amsterdam</option>
+          <option value="antananarivo">Antananarivo</option>
+          <option value="athens">Athens</option>
+          <option value="auckland">Auckland</option>
+          <option value="bangkok">Bangkok</option>
+          <option value="barcelona">Barcelona</option>
+          <option value="beijing">Beijing</option>
+          <option value="bengaluru">Bengaluru</option>
+          <option value="berlin">Berlin</option>
+          <option value="bloemfontein">Bloemfontein</option>
+          <option value="bogota">Bogotá</option>
+          <option value="boston">Boston</option>
+          <option value="brussels">Brussels</option>
+          <option value="budapest">Budapest</option>
+          <option value="buenos-aires">Buenos Aires</option>
+          <option value="cairo">Cairo</option>
+          <option value="cape-town">Cape Town</option>
+          <option value="caracas">Caracas</option>
+          <option value="casablanca">Casablanca</option>
+          <option value="chicago">Chicago</option>
+          <option value="colombo">Colombo</option>
+          <option value="copenhagen">Copenhagen</option>
+          <option value="dakar">Dakar</option>
+          <option value="dar-es-salaam">Dar es Salaam</option>
+          <option value="delhi" selected>Delhi</option>
+          <option value="denver">Denver</option>
+          <option value="dhaka">Dhaka</option>
+          <option value="dubai">Dubai</option>
+          <option value="dublin">Dublin</option>
+          <option value="durban">Durban</option>
+          <option value="george">George</option>
+          <option value="gqeberha">Gqeberha</option>
+          <option value="hanoi">Hanoi</option>
+          <option value="havana">Havana</option>
+          <option value="hong-kong">Hong Kong</option>
+          <option value="honolulu">Honolulu</option>
+          <option value="houston">Houston</option>
+          <option value="istanbul">Istanbul</option>
+          <option value="jakarta">Jakarta</option>
+          <option value="johannesburg">Johannesburg</option>
+          <option value="kampala">Kampala</option>
+          <option value="karachi">Karachi</option>
+          <option value="kathmandu">Kathmandu</option>
+          <option value="kinshasa">Kinshasa</option>
+          <option value="kuala-lumpur">Kuala Lumpur</option>
+          <option value="lagos">Lagos</option>
+          <option value="lima">Lima</option>
+          <option value="lisbon">Lisbon</option>
+          <option value="london">London</option>
+          <option value="los-angeles">Los Angeles</option>
+          <option value="lusaka">Lusaka</option>
+          <option value="madrid">Madrid</option>
+          <option value="manila">Manila</option>
+          <option value="maputo">Maputo</option>
+          <option value="melbourne">Melbourne</option>
+          <option value="mexico-city">Mexico City</option>
+          <option value="miami">Miami</option>
+          <option value="montevideo">Montevideo</option>
+          <option value="montreal">Montréal</option>
+          <option value="moscow">Moscow</option>
+          <option value="mumbai">Mumbai</option>
+          <option value="nairobi">Nairobi</option>
+          <option value="new-york">New York</option>
+          <option value="osaka">Osaka</option>
+          <option value="oslo">Oslo</option>
+          <option value="panama-city">Panama City</option>
+          <option value="paris">Paris</option>
+          <option value="perth">Perth</option>
+          <option value="pietermaritzburg">Pietermaritzburg</option>
+          <option value="prague">Prague</option>
+          <option value="pretoria">Pretoria</option>
+          <option value="quito">Quito</option>
+          <option value="reykjavik">Reykjavík</option>
+          <option value="rio-de-janeiro">Rio de Janeiro</option>
+          <option value="riyadh">Riyadh</option>
+          <option value="rome">Rome</option>
+          <option value="san-francisco">San Francisco</option>
+          <option value="santiago">Santiago</option>
+          <option value="sao-paulo">São Paulo</option>
+          <option value="seoul">Seoul</option>
+          <option value="shanghai">Shanghai</option>
+          <option value="singapore">Singapore</option>
+          <option value="stellenbosch">Stellenbosch</option>
+          <option value="stockholm">Stockholm</option>
+          <option value="sydney">Sydney</option>
+          <option value="taipei">Taipei</option>
+          <option value="tehran">Tehran</option>
+          <option value="tel-aviv">Tel Aviv</option>
+          <option value="tokyo">Tokyo</option>
+          <option value="toronto">Toronto</option>
+          <option value="tunis">Tunis</option>
+          <option value="vancouver">Vancouver</option>
+          <option value="vienna">Vienna</option>
+          <option value="warsaw">Warsaw</option>
+          <option value="washington">Washington</option>
+          <option value="wellington">Wellington</option>
+          <option value="windhoek">Windhoek</option>
+        </select>
+      </label>
+      <label>Spin
+        <input id="spin" type="range" min="0" max="100" value="9" aria-label="Globe rotation speed">
+      </label>
+    </div>
+    <div class="times">
+      <div class="pill"><span class="label">Hours to sunrise</span><b class="count" id="count-rise">--:--:--</b></div>
+      <div class="pill"><span class="label">Hours to sunset</span><b class="count" id="count-set">--:--:--</b></div>
+    </div>
+    <div class="times">
+      <div class="pill"><span class="label">Sunrise</span><b id="rise">06:15</b></div>
+      <div class="pill"><span class="label">Sunset</span><b id="set">18:04</b></div>
+    </div>
+    <p class="now" id="now"></p>
+    <p class="note" id="note">Times and the globe are set to Delhi. Shown in IST.</p>
+    <div class="month">
+      <h2 id="month-title">This month</h2>
+      <div class="month-scroll">
+        <table>
+          <thead><tr><th>Date</th><th>Rise</th><th>Set</th><th>Length</th><th>Noon</th></tr></thead>
+          <tbody id="month-body"></tbody>
+        </table>
+      </div>
+    </div>
+    <details class="rocks">
+      <summary>Passing rocks</summary>
+      <div class="rocks-body">
+        <p class="rocks-lead" id="rocks-lead">Checking NASA’s list…</p>
+        <ul class="rocks-list" id="rocks-list"></ul>
+        <p class="rocks-pha" id="rocks-pha"></p>
+        <p class="rocks-more"><a href="https://cneos.jpl.nasa.gov/ca/" target="_blank" rel="noopener">NASA’s close-approach list</a></p>
+      </div>
+    </details>
+  </section>
+<details class="seo">
+  <summary>Times, FAQ, and other cities</summary>
+  <div class="seo-body">
+    <p>These times are written into the page for Delhi on 4 October 2026. The clock script refreshes them in IST.</p>
+    <h2>FAQ</h2>
+    <ol><li><strong>What time is sunrise in Delhi today?</strong> On 4 October 2026 sunrise in Delhi is 06:15 (IST).</li><li><strong>What time is sunset in Delhi today?</strong> On 4 October 2026 sunset in Delhi is 18:04 (IST).</li><li><strong>How long is the day in Delhi?</strong> On 4 October 2026 the day in Delhi lasts 11 hours 49 minutes, from sunrise at 06:15 to sunset at 18:04 (IST).</li></ol>
+    <h2>Other cities</h2>
+    <p><a href="sunrise-accra.html">Accra</a>, <a href="sunrise-addis-ababa.html">Addis Ababa</a>, <a href="sunrise-algiers.html">Algiers</a>, <a href="sunrise-amsterdam.html">Amsterdam</a>, <a href="sunrise-antananarivo.html">Antananarivo</a>, <a href="sunrise-athens.html">Athens</a>, <a href="sunrise-auckland.html">Auckland</a>, <a href="sunrise-bangkok.html">Bangkok</a>, <a href="sunrise-barcelona.html">Barcelona</a>, <a href="sunrise-beijing.html">Beijing</a>, <a href="sunrise-bengaluru.html">Bengaluru</a>, <a href="sunrise-berlin.html">Berlin</a>, <a href="sunrise-bloemfontein.html">Bloemfontein</a>, <a href="sunrise-bogota.html">Bogotá</a>, <a href="sunrise-boston.html">Boston</a>, <a href="sunrise-brussels.html">Brussels</a>, <a href="sunrise-budapest.html">Budapest</a>, <a href="sunrise-buenos-aires.html">Buenos Aires</a>, <a href="sunrise-cairo.html">Cairo</a>, <a href="sunrise-cape-town.html">Cape Town</a>, <a href="sunrise-caracas.html">Caracas</a>, <a href="sunrise-casablanca.html">Casablanca</a>, <a href="sunrise-chicago.html">Chicago</a>, <a href="sunrise-colombo.html">Colombo</a>, <a href="sunrise-copenhagen.html">Copenhagen</a>, <a href="sunrise-dakar.html">Dakar</a>, <a href="sunrise-dar-es-salaam.html">Dar es Salaam</a>, <a href="sunrise-delhi.html">Delhi</a>, <a href="sunrise-denver.html">Denver</a>, <a href="sunrise-dhaka.html">Dhaka</a>, <a href="sunrise-dubai.html">Dubai</a>, <a href="sunrise-dublin.html">Dublin</a>, <a href="sunrise-durban.html">Durban</a>, <a href="sunrise-george.html">George</a>, <a href="sunrise-gqeberha.html">Gqeberha</a>, <a href="sunrise-hanoi.html">Hanoi</a>, <a href="sunrise-havana.html">Havana</a>, <a href="sunrise-hong-kong.html">Hong Kong</a>, <a href="sunrise-honolulu.html">Honolulu</a>, <a href="sunrise-houston.html">Houston</a>, <a href="sunrise-istanbul.html">Istanbul</a>, <a href="sunrise-jakarta.html">Jakarta</a>, <a href="sunrise-johannesburg.html">Johannesburg</a>, <a href="sunrise-kampala.html">Kampala</a>, <a href="sunrise-karachi.html">Karachi</a>, <a href="sunrise-kathmandu.html">Kathmandu</a>, <a href="sunrise-kinshasa.html">Kinshasa</a>, <a href="sunrise-kuala-lumpur.html">Kuala Lumpur</a>, <a href="sunrise-lagos.html">Lagos</a>, <a href="sunrise-lima.html">Lima</a>, <a href="sunrise-lisbon.html">Lisbon</a>, <a href="sunrise-london.html">London</a>, <a href="sunrise-los-angeles.html">Los Angeles</a>, <a href="sunrise-lusaka.html">Lusaka</a>, <a href="sunrise-madrid.html">Madrid</a>, <a href="sunrise-manila.html">Manila</a>, <a href="sunrise-maputo.html">Maputo</a>, <a href="sunrise-melbourne.html">Melbourne</a>, <a href="sunrise-mexico-city.html">Mexico City</a>, <a href="sunrise-miami.html">Miami</a>, <a href="sunrise-montevideo.html">Montevideo</a>, <a href="sunrise-montreal.html">Montréal</a>, <a href="sunrise-moscow.html">Moscow</a>, <a href="sunrise-mumbai.html">Mumbai</a>, <a href="sunrise-nairobi.html">Nairobi</a>, <a href="sunrise-new-york.html">New York</a>, <a href="sunrise-osaka.html">Osaka</a>, <a href="sunrise-oslo.html">Oslo</a>, <a href="sunrise-panama-city.html">Panama City</a>, <a href="sunrise-paris.html">Paris</a>, <a href="sunrise-perth.html">Perth</a>, <a href="sunrise-pietermaritzburg.html">Pietermaritzburg</a>, <a href="sunrise-prague.html">Prague</a>, <a href="sunrise-pretoria.html">Pretoria</a>, <a href="sunrise-quito.html">Quito</a>, <a href="sunrise-reykjavik.html">Reykjavík</a>, <a href="sunrise-rio-de-janeiro.html">Rio de Janeiro</a>, <a href="sunrise-riyadh.html">Riyadh</a>, <a href="sunrise-rome.html">Rome</a>, <a href="sunrise-san-francisco.html">San Francisco</a>, <a href="sunrise-santiago.html">Santiago</a>, <a href="sunrise-sao-paulo.html">São Paulo</a>, <a href="sunrise-seoul.html">Seoul</a>, <a href="sunrise-shanghai.html">Shanghai</a>, <a href="sunrise-singapore.html">Singapore</a>, <a href="sunrise-stellenbosch.html">Stellenbosch</a>, <a href="sunrise-stockholm.html">Stockholm</a>, <a href="sunrise-sydney.html">Sydney</a>, <a href="sunrise-taipei.html">Taipei</a>, <a href="sunrise-tehran.html">Tehran</a>, <a href="sunrise-tel-aviv.html">Tel Aviv</a>, <a href="sunrise-tokyo.html">Tokyo</a>, <a href="sunrise-toronto.html">Toronto</a>, <a href="sunrise-tunis.html">Tunis</a>, <a href="sunrise-vancouver.html">Vancouver</a>, <a href="sunrise-vienna.html">Vienna</a>, <a href="sunrise-warsaw.html">Warsaw</a>, <a href="sunrise-washington.html">Washington</a>, <a href="sunrise-wellington.html">Wellington</a>, <a href="sunrise-windhoek.html">Windhoek</a></p>
+    <h2>Notes</h2>
+    <p><a href="index.html">All sunrise times</a>. <a href="blog/longest-day-of-the-year.html">Longest day of the year</a>, <a href="blog/equinox-explained.html">equinox explained</a>, <a href="blog/daylight-saving-time.html">daylight saving time</a>.</p>
+  </div>
+</details>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+const CITIES = [
+  ["Johannesburg", -26.2041, 28.0473],
+  ["Pretoria", -25.7479, 28.2293],
+  ["Cape Town", -33.9249, 18.4241],
+  ["Durban", -29.8587, 31.0218],
+  ["Gqeberha", -33.9608, 25.6022],
+  ["Bloemfontein", -29.0852, 26.1596],
+  ["Polokwane", -23.9045, 29.4689],
+  ["Mbombela", -25.4753, 30.9694],
+  ["Knysna", -34.0356, 23.0488],
+  ["George", -33.9881, 22.4530],
+  ["Plettenberg Bay", -34.0527, 23.3716],
+  ["Drakensberg", -29.0, 29.3],
+  ["London", 51.5074, -0.1278],
+  ["New York", 40.7128, -74.006],
+  ["Dubai", 25.2048, 55.2708],
+  ["Sydney", -33.8688, 151.2093]
+];
+
+const RAD = Math.PI / 180;
+const DEG = 180 / Math.PI;
+const DAY_URL = "https://cdn.jsdelivr.net/npm/three-globe@2.31.1/example/img/earth-blue-marble.jpg";
+const NIGHT_URL = "https://cdn.jsdelivr.net/npm/three-globe@2.31.1/example/img/earth-night.jpg";
+
+function dayOfYear(d) {
+  const start = new Date(d.getFullYear(), 0, 0);
+  return Math.floor((d - start) / 86400000);
+}
+
+function sunUT(date, lat, lng, rising) {
+  const n = dayOfYear(date);
+  const lngHour = lng / 15;
+  const t = n + ((rising ? 6 : 18) - lngHour) / 24;
+  const M = (0.9856 * t) - 3.289;
+  let L = M + (1.916 * Math.sin(M * RAD)) + (0.020 * Math.sin(2 * M * RAD)) + 282.634;
+  L = (L % 360 + 360) % 360;
+  let RA = DEG * Math.atan(0.91764 * Math.tan(L * RAD));
+  RA = (RA % 360 + 360) % 360;
+  const Lq = Math.floor(L / 90) * 90;
+  const RAq = Math.floor(RA / 90) * 90;
+  RA = (RA + (Lq - RAq)) / 15;
+  const sinDec = 0.39782 * Math.sin(L * RAD);
+  const cosDec = Math.cos(Math.asin(sinDec));
+  const cosH = (Math.cos(90.833 * RAD) - (sinDec * Math.sin(lat * RAD))) / (cosDec * Math.cos(lat * RAD));
+  if (cosH > 1 || cosH < -1) return null;
+  let H = rising ? 360 - DEG * Math.acos(cosH) : DEG * Math.acos(cosH);
+  H /= 15;
+  const T = H + RA - (0.06571 * t) - 6.622;
+  let UT = (T - lngHour) % 24;
+  if (UT < 0) UT += 24;
+  return UT;
+}
+
+function localSun(date, lat, lng, rising) {
+  const ut = sunUT(date, lat, lng, rising);
+  if (ut == null) return null;
+  const utc = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0));
+  return new Date(utc.getTime() + ut * 3600000);
+}
+
+function nearestCity(lat, lng) {
+  let best = CITIES[0], bestD = Infinity;
+  for (const c of CITIES) {
+    const dlat = (c[1] - lat) * RAD;
+    const dlng = (c[2] - lng) * RAD;
+    const a = Math.sin(dlat / 2) ** 2 + Math.cos(lat * RAD) * Math.cos(c[1] * RAD) * Math.sin(dlng / 2) ** 2;
+    const d = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    if (d < bestD) { bestD = d; best = c; }
+  }
+  return { name: best[0], km: bestD * 6371 };
+}
+
+function mix(a, b, t) {
+  const p = (h) => {
+    const n = parseInt(h.slice(1), 16);
+    return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  };
+  const A = p(a), B = p(b);
+  const c = A.map((v, i) => Math.round(v + (B[i] - v) * t));
+  return "rgb(" + c[0] + ", " + c[1] + ", " + c[2] + ")";
+}
+
+function skyAt(now, rise, set) {
+  const t = now.getTime();
+  const stops = [
+    [rise.getTime() - 90 * 60000, "#070b18", "#10182e"],
+    [rise.getTime() - 40 * 60000, "#2a1848", "#c46a8a"],
+    [rise.getTime() + 5 * 60000, "#ff8a4a", "#ffd0b0"],
+    [rise.getTime() + 50 * 60000, "#6eb6ff", "#e8f6ff"],
+    [(rise.getTime() + set.getTime()) / 2, "#3d8dff", "#d5eeff"],
+    [set.getTime() - 50 * 60000, "#f0b15a", "#ffe0b0"],
+    [set.getTime(), "#e25b3a", "#6a2a55"],
+    [set.getTime() + 40 * 60000, "#1a1030", "#0c1224"],
+    [set.getTime() + 90 * 60000, "#070b18", "#0b1224"]
+  ];
+  if (t <= stops[0][0]) return [stops[0][1], stops[0][2], 1];
+  if (t >= stops[stops.length - 1][0]) return [stops[stops.length - 1][1], stops[stops.length - 1][2], 1];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (t >= stops[i][0] && t <= stops[i + 1][0]) {
+      const u = (t - stops[i][0]) / (stops[i + 1][0] - stops[i][0]);
+      const night = (t < rise.getTime() - 40 * 60000) || (t > set.getTime() + 40 * 60000);
+      return [mix(stops[i][1], stops[i + 1][1], u), mix(stops[i][2], stops[i + 1][2], u), night ? 1 : 0];
+    }
+  }
+  return ["#070b18", "#10182e", 1];
+}
+
+function pad(n) { return String(n).padStart(2, "0"); }
+function fmt(d) {
+  if (place.tz) {
+    return new Intl.DateTimeFormat("en-GB", { timeZone: place.tz, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(d);
+  }
+  return pad(d.getHours()) + ":" + pad(d.getMinutes());
+}
+function fmtFull(d) {
+  if (place.tz) {
+    return new Intl.DateTimeFormat("en-GB", { timeZone: place.tz, hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23" }).format(d);
+  }
+  return fmt(d) + ":" + pad(d.getSeconds());
+}
+
+let place = { name: "Delhi", lat: 28.65195, lng: 77.23149, exact: true, tz: "Asia/Kolkata", lock: true };
+let globe = null;
+
+let spinSpeed = 0.0007;
+const CITY_PICK = [
+  ["Accra", "accra", 5.55602, -0.1969, "Africa/Accra"],
+  ["Addis Ababa", "addis-ababa", 9.02497, 38.74689, "Africa/Addis_Ababa"],
+  ["Algiers", "algiers", 36.73225, 3.08746, "Africa/Algiers"],
+  ["Amsterdam", "amsterdam", 52.37403, 4.88969, "Europe/Amsterdam"],
+  ["Antananarivo", "antananarivo", -18.91368, 47.53613, "Indian/Antananarivo"],
+  ["Athens", "athens", 37.98376, 23.72784, "Europe/Athens"],
+  ["Auckland", "auckland", -36.84853, 174.76349, "Pacific/Auckland"],
+  ["Bangkok", "bangkok", 13.75398, 100.50144, "Asia/Bangkok"],
+  ["Barcelona", "barcelona", 41.38879, 2.15899, "Europe/Madrid"],
+  ["Beijing", "beijing", 39.9075, 116.39723, "Asia/Shanghai"],
+  ["Bengaluru", "bengaluru", 12.97194, 77.59369, "Asia/Kolkata"],
+  ["Berlin", "berlin", 52.52, 13.405, "Europe/Berlin"],
+  ["Bloemfontein", "bloemfontein", -29.12107, 26.214, "Africa/Johannesburg"],
+  ["Bogotá", "bogota", 4.60971, -74.08175, "America/Bogota"],
+  ["Boston", "boston", 42.35843, -71.05977, "America/New_York"],
+  ["Brussels", "brussels", 50.85045, 4.34878, "Europe/Brussels"],
+  ["Budapest", "budapest", 47.49835, 19.04045, "Europe/Budapest"],
+  ["Buenos Aires", "buenos-aires", -34.61315, -58.37723, "America/Argentina/Buenos_Aires"],
+  ["Cairo", "cairo", 30.06263, 31.24967, "Africa/Cairo"],
+  ["Cape Town", "cape-town", -33.9249, 18.4241, "Africa/Johannesburg"],
+  ["Caracas", "caracas", 10.48801, -66.87919, "America/Caracas"],
+  ["Casablanca", "casablanca", 33.58831, -7.61138, "Africa/Casablanca"],
+  ["Chicago", "chicago", 41.85003, -87.65005, "America/Chicago"],
+  ["Colombo", "colombo", 6.93548, 79.84868, "Asia/Colombo"],
+  ["Copenhagen", "copenhagen", 55.67594, 12.56553, "Europe/Copenhagen"],
+  ["Dakar", "dakar", 14.6937, -17.44406, "Africa/Dakar"],
+  ["Dar es Salaam", "dar-es-salaam", -6.82349, 39.26951, "Africa/Dar_es_Salaam"],
+  ["Delhi", "delhi", 28.65195, 77.23149, "Asia/Kolkata"],
+  ["Denver", "denver", 39.73915, -104.9847, "America/Denver"],
+  ["Dhaka", "dhaka", 23.7104, 90.40744, "Asia/Dhaka"],
+  ["Dubai", "dubai", 25.2048, 55.2708, "Asia/Dubai"],
+  ["Dublin", "dublin", 53.33306, -6.24889, "Europe/Dublin"],
+  ["Durban", "durban", -29.8579, 31.0292, "Africa/Johannesburg"],
+  ["George", "george", -33.963, 22.46173, "Africa/Johannesburg"],
+  ["Gqeberha", "gqeberha", -33.96109, 25.61494, "Africa/Johannesburg"],
+  ["Hanoi", "hanoi", 21.0245, 105.84117, "Asia/Bangkok"],
+  ["Havana", "havana", 23.13302, -82.38304, "America/Havana"],
+  ["Hong Kong", "hong-kong", 22.27832, 114.17469, "Asia/Hong_Kong"],
+  ["Honolulu", "honolulu", 21.30694, -157.85833, "Pacific/Honolulu"],
+  ["Houston", "houston", 29.76328, -95.36327, "America/Chicago"],
+  ["Istanbul", "istanbul", 41.01384, 28.94966, "Europe/Istanbul"],
+  ["Jakarta", "jakarta", -6.21462, 106.84513, "Asia/Jakarta"],
+  ["Johannesburg", "johannesburg", -26.2041, 28.0473, "Africa/Johannesburg"],
+  ["Kampala", "kampala", 0.31628, 32.58219, "Africa/Kampala"],
+  ["Karachi", "karachi", 24.8608, 67.0104, "Asia/Karachi"],
+  ["Kathmandu", "kathmandu", 27.70169, 85.3206, "Asia/Kathmandu"],
+  ["Kinshasa", "kinshasa", -4.32758, 15.31357, "Africa/Kinshasa"],
+  ["Kuala Lumpur", "kuala-lumpur", 3.1412, 101.68653, "Asia/Kuala_Lumpur"],
+  ["Lagos", "lagos", 6.5244, 3.3792, "Africa/Lagos"],
+  ["Lima", "lima", -12.04318, -77.02824, "America/Lima"],
+  ["Lisbon", "lisbon", 38.72509, -9.1498, "Europe/Lisbon"],
+  ["London", "london", 51.5074, -0.1278, "Europe/London"],
+  ["Los Angeles", "los-angeles", 34.05223, -118.24368, "America/Los_Angeles"],
+  ["Lusaka", "lusaka", -15.40669, 28.28713, "Africa/Lusaka"],
+  ["Madrid", "madrid", 40.4165, -3.70256, "Europe/Madrid"],
+  ["Manila", "manila", 14.6042, 120.9822, "Asia/Manila"],
+  ["Maputo", "maputo", -25.96553, 32.58322, "Africa/Maputo"],
+  ["Melbourne", "melbourne", -37.814, 144.96332, "Australia/Melbourne"],
+  ["Mexico City", "mexico-city", 19.42847, -99.12766, "America/Mexico_City"],
+  ["Miami", "miami", 25.77427, -80.19366, "America/New_York"],
+  ["Montevideo", "montevideo", -34.90328, -56.18816, "America/Montevideo"],
+  ["Montréal", "montreal", 45.50884, -73.58781, "America/Toronto"],
+  ["Moscow", "moscow", 55.75204, 37.61781, "Europe/Moscow"],
+  ["Mumbai", "mumbai", 19.07283, 72.88261, "Asia/Kolkata"],
+  ["Nairobi", "nairobi", -1.28333, 36.81667, "Africa/Nairobi"],
+  ["New York", "new-york", 40.7128, -74.006, "America/New_York"],
+  ["Osaka", "osaka", 34.69379, 135.50107, "Asia/Tokyo"],
+  ["Oslo", "oslo", 59.91273, 10.74609, "Europe/Oslo"],
+  ["Panama City", "panama-city", 8.9936, -79.51973, "America/Panama"],
+  ["Paris", "paris", 48.8566, 2.3522, "Europe/Paris"],
+  ["Perth", "perth", -31.95224, 115.8614, "Australia/Perth"],
+  ["Pietermaritzburg", "pietermaritzburg", -29.61679, 30.39278, "Africa/Johannesburg"],
+  ["Prague", "prague", 50.08804, 14.42076, "Europe/Prague"],
+  ["Pretoria", "pretoria", -25.74486, 28.18783, "Africa/Johannesburg"],
+  ["Quito", "quito", -0.22985, -78.52495, "America/Guayaquil"],
+  ["Reykjavík", "reykjavik", 64.13548, -21.89541, "Atlantic/Reykjavik"],
+  ["Rio de Janeiro", "rio-de-janeiro", -22.90642, -43.18223, "America/Sao_Paulo"],
+  ["Riyadh", "riyadh", 24.68773, 46.72185, "Asia/Riyadh"],
+  ["Rome", "rome", 41.89193, 12.51133, "Europe/Rome"],
+  ["San Francisco", "san-francisco", 37.77493, -122.41942, "America/Los_Angeles"],
+  ["Santiago", "santiago", -33.45694, -70.64827, "America/Santiago"],
+  ["São Paulo", "sao-paulo", -23.5475, -46.63611, "America/Sao_Paulo"],
+  ["Seoul", "seoul", 37.566, 126.9784, "Asia/Seoul"],
+  ["Shanghai", "shanghai", 31.22222, 121.45806, "Asia/Shanghai"],
+  ["Singapore", "singapore", 1.28967, 103.85007, "Asia/Singapore"],
+  ["Stellenbosch", "stellenbosch", -33.93462, 18.86676, "Africa/Johannesburg"],
+  ["Stockholm", "stockholm", 59.32938, 18.06871, "Europe/Stockholm"],
+  ["Sydney", "sydney", -33.8688, 151.2093, "Australia/Sydney"],
+  ["Taipei", "taipei", 25.05306, 121.52639, "Asia/Taipei"],
+  ["Tehran", "tehran", 35.69439, 51.42151, "Asia/Tehran"],
+  ["Tel Aviv", "tel-aviv", 32.08088, 34.78057, "Asia/Jerusalem"],
+  ["Tokyo", "tokyo", 35.6762, 139.6503, "Asia/Tokyo"],
+  ["Toronto", "toronto", 43.70643, -79.39864, "America/Toronto"],
+  ["Tunis", "tunis", 36.81897, 10.16579, "Africa/Tunis"],
+  ["Vancouver", "vancouver", 49.24966, -123.11934, "America/Vancouver"],
+  ["Vienna", "vienna", 48.20849, 16.37208, "Europe/Vienna"],
+  ["Warsaw", "warsaw", 52.22977, 21.01178, "Europe/Warsaw"],
+  ["Washington", "washington", 38.89511, -77.03637, "America/New_York"],
+  ["Wellington", "wellington", -41.28664, 174.77557, "Pacific/Auckland"],
+  ["Windhoek", "windhoek", -22.55941, 17.08323, "Africa/Windhoek"],
+];
+function applyCity(slug, push) {
+  const c = CITY_PICK.find(function (row) { return row[1] === slug; });
+  if (!c) return;
+  place = { name: c[0], lat: c[2], lng: c[3], exact: true, tz: c[4], lock: true };
+  const title = "Sunrise Time in " + c[0] + " Today";
+  document.title = title;
+  const h1 = document.getElementById("seo-title");
+  if (h1) h1.textContent = title;
+  const meta = document.querySelector('meta[name="description"]');
+  if (meta) meta.setAttribute("content", "Sunrise and sunset in " + c[0] + " today, on a day-and-night Earth.");
+  const nameEl = document.getElementById("city-name");
+  if (nameEl) nameEl.textContent = c[0];
+  const sel = document.getElementById("city-picker");
+  if (sel && sel.value !== slug) sel.value = slug;
+  const note = document.getElementById("note");
+  if (note) note.textContent = "Times and the globe are set to " + c[0] + ".";
+  if (push) {
+    try { history.pushState({ slug: slug }, title, "sunrise-" + slug + ".html"); }
+    catch (err) { location.href = "sunrise-" + slug + ".html"; }
+  }
+  tick();
+}
+
+function placeSun(now, rise, set) {
+  const w = window.innerWidth, h = window.innerHeight;
+  const yBase = h * 0.82;
+  const span = Math.min(w * 0.72, 920);
+  const x0 = (w - span) / 2;
+  let p;
+  if (now < rise) p = -0.08;
+  else if (now > set) p = 1.08;
+  else p = (now - rise) / (set - rise);
+  const x = x0 + span * Math.min(1, Math.max(0, p));
+  const arc = Math.sin(Math.min(1, Math.max(0, p)) * Math.PI);
+  const y = yBase - arc * h * 0.52;
+  const sun = document.getElementById("sun");
+  sun.style.left = x + "px";
+  sun.style.top = y + "px";
+  const glow = document.getElementById("glow");
+  glow.style.left = x + "px";
+  glow.style.top = y + "px";
+  const below = now < rise || now > set;
+  sun.style.opacity = below ? "0.35" : "1";
+  glow.style.opacity = below ? "0.12" : "0.5";
+}
+
+function julianN(date) {
+  return date.getTime() / 86400000 + 2440587.5 - 2451545.0;
+}
+
+function solarPoint(date) {
+  const n = julianN(date);
+  let L = (280.460 + 0.9856474 * n) % 360;
+  if (L < 0) L += 360;
+  let g = (357.528 + 0.9856003 * n) % 360;
+  if (g < 0) g += 360;
+  const lambda = L + 1.915 * Math.sin(g * RAD) + 0.020 * Math.sin(2 * g * RAD);
+  const eps = 23.439 - 0.0000004 * n;
+  const lam = lambda * RAD;
+  const ob = eps * RAD;
+  const ra = Math.atan2(Math.cos(ob) * Math.sin(lam), Math.cos(lam));
+  const dec = Math.asin(Math.sin(ob) * Math.sin(lam));
+  let gmst = (280.46061837 + 360.98564736629 * n) % 360;
+  if (gmst < 0) gmst += 360;
+  let subLon = (ra * DEG - gmst) % 360;
+  if (subLon > 180) subLon -= 360;
+  if (subLon < -180) subLon += 360;
+  return { dec: dec * DEG, subLon: subLon, lambda: ((lambda % 360) + 360) % 360, gmst: gmst };
+}
+
+function moonPoint(date, sun) {
+  const syn = 29.530588853;
+  const known = Date.UTC(2000, 0, 6, 18, 14, 0);
+  const days = (date.getTime() - known) / 86400000;
+  const age = ((days % syn) + syn) % syn;
+  const elong = (age / syn) * 360;
+  const lambda = sun.lambda + elong;
+  const beta = 5.14 * Math.sin(elong * RAD);
+  const eps = (23.439) * RAD;
+  const lam = lambda * RAD;
+  const bet = beta * RAD;
+  const ra = Math.atan2(Math.sin(lam) * Math.cos(eps) - Math.tan(bet) * Math.sin(eps), Math.cos(lam));
+  const dec = Math.asin(Math.sin(bet) * Math.cos(eps) + Math.cos(bet) * Math.sin(eps) * Math.sin(lam));
+  let lon = (ra * DEG - sun.gmst) % 360;
+  if (lon > 180) lon -= 360;
+  if (lon < -180) lon += 360;
+  return { lat: dec * DEG, lon: lon, age: age };
+}
+
+function geoVec(lat, lon, radius) {
+  const phi = (90 - lat) * RAD;
+  const theta = (lon + 180) * RAD;
+  const sinPhi = Math.sin(phi);
+  return new THREE.Vector3(
+    -radius * Math.cos(theta) * sinPhi,
+    radius * Math.cos(phi),
+    radius * Math.sin(theta) * sinPhi
+  );
+}
+
+function hasWebGL() {
+  try {
+    const c = document.createElement("canvas");
+    return !!(window.WebGLRenderingContext && (c.getContext("webgl") || c.getContext("experimental-webgl")));
+  } catch (e) {
+    return false;
+  }
+}
+
+function paintSky(now, rise, set) {
+  const [c1, c2, night] = skyAt(now, rise, set);
+  document.getElementById("sky").style.background = "linear-gradient(180deg, " + c1 + ", " + c2 + ")";
+  document.getElementById("stars").style.opacity = String(night);
+  placeSun(now, rise, set);
+}
+
+function initGlobe() {
+  const canvas = document.getElementById("globe");
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  if (THREE.LinearSRGBColorSpace) renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+  scene.add(new THREE.AmbientLight(0x8aa0c8, 0.08));
+
+  const sunDir = new THREE.Vector3(1, 0, 0);
+  const earthMat = new THREE.ShaderMaterial({
+    uniforms: {
+      dayMap: { value: null },
+      nightMap: { value: null },
+      sunDir: { value: sunDir },
+      hasDay: { value: 0 },
+      hasNight: { value: 0 }
+    },
+    vertexShader: [
+      "varying vec2 vUv;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vUv = uv;",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform sampler2D dayMap;",
+      "uniform sampler2D nightMap;",
+      "uniform vec3 sunDir;",
+      "uniform float hasDay;",
+      "uniform float hasNight;",
+      "varying vec2 vUv;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vec3 n = normalize(vNormal);",
+      "  vec3 s = normalize(sunDir);",
+      "  float ndl = dot(n, s);",
+      "  float dayAmt = smoothstep(-0.18, 0.32, ndl);",
+      "  vec3 dayTex = texture2D(dayMap, vUv).rgb;",
+      "  vec3 nightTex = texture2D(nightMap, vUv).rgb;",
+      "  float dayLuma = dot(dayTex, vec3(0.299, 0.587, 0.114));",
+      "  vec3 dayFallback = vec3(0.42, 0.70, 0.95);",
+      "  vec3 dayCol = mix(dayFallback, dayTex, hasDay * step(0.05, dayLuma));",
+      "  vec3 nightCol = mix(vec3(0.015, 0.02, 0.045), nightTex, hasNight);",
+      "  float water = smoothstep(0.04, 0.16, dayTex.b - dayTex.r);",
+      "  water *= 1.0 - smoothstep(0.06, 0.22, dayTex.g - dayTex.b);",
+      "  water *= 1.0 - smoothstep(0.72, 0.92, dayLuma);",
+      "  vec3 col = mix(nightCol, dayCol, dayAmt);",
+      "  col += dayCol * clamp(ndl, 0.0, 1.0) * 0.18 * (1.0 - water);",
+      "  float shade = smoothstep(-0.65, 0.85, ndl);",
+      "  vec3 ocean = mix(vec3(0.012, 0.04, 0.055), vec3(0.05, 0.12, 0.125), shade);",
+      "  col = mix(col, ocean, water);",
+      "  float term = exp(-ndl * ndl * 28.0);",
+      "  col += vec3(1.0, 0.48, 0.18) * term * 0.22 * (1.0 - water);",
+      "  gl_FragColor = vec4(col, 1.0);",
+      "}"
+    ].join("\n")
+  });
+
+  const dayPlaceholder = new THREE.DataTexture(new Uint8Array([90, 160, 230, 255]), 1, 1);
+  dayPlaceholder.needsUpdate = true;
+  earthMat.uniforms.dayMap.value = dayPlaceholder;
+  const earth = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 96), earthMat);
+  scene.add(earth);
+
+  const atmosMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    transparent: true,
+    depthWrite: false,
+    uniforms: { sunDir: { value: sunDir }, fullAmt: { value: 0.5 } },
+    vertexShader: [
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vNormal = normalize(normalMatrix * normal);",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "varying vec3 vNormal;",
+      "uniform vec3 sunDir;",
+      "void main() {",
+      "  float rim = pow(0.62 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2);",
+      "  float lit = smoothstep(-0.2, 0.6, dot(normalize(vNormal), normalize(sunDir)));",
+      "  vec3 glow = mix(vec3(0.25, 0.35, 0.7), vec3(0.55, 0.75, 1.0), lit);",
+      "  gl_FragColor = vec4(glow, clamp(rim, 0.0, 1.0) * 0.9);",
+      "}"
+    ].join("\n")
+  });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.08, 64, 64), atmosMat));
+
+  const moonMat = new THREE.ShaderMaterial({
+    uniforms: { sunDir: { value: sunDir }, fullAmt: { value: 0.5 } },
+    vertexShader: [
+      "varying vec3 vNormal;",
+      "varying vec3 vPos;",
+      "void main() {",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  vPos = position;",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir;",
+      "uniform float fullAmt;",
+      "varying vec3 vNormal;",
+      "varying vec3 vPos;",
+      "float hash(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }",
+      "float noise(vec3 p) {",
+      "  vec3 i = floor(p); vec3 f = fract(p); f = f * f * (3.0 - 2.0 * f);",
+      "  return mix(mix(mix(hash(i), hash(i+vec3(1.0,0.0,0.0)), f.x),",
+      "                 mix(hash(i+vec3(0.0,1.0,0.0)), hash(i+vec3(1.0,1.0,0.0)), f.x), f.y),",
+      "             mix(mix(hash(i+vec3(0.0,0.0,1.0)), hash(i+vec3(1.0,0.0,1.0)), f.x),",
+      "                 mix(hash(i+vec3(0.0,1.0,1.0)), hash(i+vec3(1.0,1.0,1.0)), f.x), f.y), f.z);",
+      "}",
+      "void main() {",
+      "  vec3 N = normalize(vNormal);",
+      "  vec3 L = normalize(sunDir);",
+      "  float ndl = dot(N, L);",
+      "  float lit = smoothstep(-0.06, 0.22, ndl);",
+      "  float maria = smoothstep(0.38, 0.72, noise(vPos * 3.2));",
+      "  float pits = smoothstep(0.62, 0.84, noise(vPos * 14.0));",
+      "  float grain = noise(vPos * 28.0);",
+      "  vec3 highland = vec3(0.80, 0.78, 0.72);",
+      "  vec3 mare = vec3(0.40, 0.42, 0.46);",
+      "  vec3 albedo = mix(highland, mare, maria);",
+      "  albedo *= mix(0.92, 1.05, grain);",
+      "  albedo = mix(albedo, albedo * vec3(0.55, 0.54, 0.50), pits);",
+      "  float sunAmt = clamp(ndl, 0.0, 1.0);",
+      "  vec3 col = albedo * vec3(1.0, 0.96, 0.88) * (0.05 + lit * (0.35 + 0.75 * sunAmt));",
+      "  col += vec3(0.055, 0.065, 0.095) * (1.0 - lit);",
+      "  col += vec3(1.0, 0.93, 0.75) * pow(sunAmt, 6.0) * 0.18;",
+      "  col += albedo * vec3(1.0, 0.97, 0.9) * lit * fullAmt * 0.55;",
+      "  gl_FragColor = vec4(col, 1.0);",
+      "}"
+    ].join("\n")
+  });
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.13, 64, 64), moonMat);
+  scene.add(moon);
+
+  const jupiterMat = new THREE.ShaderMaterial({
+    uniforms: { sunDir: { value: sunDir } },
+    vertexShader: [
+      "varying vec3 vNormal;",
+      "varying vec3 vPos;",
+      "void main() {",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  vPos = position;",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir;",
+      "varying vec3 vNormal;",
+      "varying vec3 vPos;",
+      "void main() {",
+      "  vec3 N = normalize(vNormal);",
+      "  float lit = smoothstep(-0.08, 0.35, dot(N, normalize(sunDir)));",
+      "  float lat = vPos.y / 0.20;",
+      "  float bands = sin(lat * 18.0);",
+      "  float bands2 = sin(lat * 9.0 + 0.7);",
+      "  vec3 orange = vec3(0.80, 0.42, 0.12);",
+      "  vec3 cream = vec3(0.95, 0.84, 0.58);",
+      "  vec3 whiteb = vec3(0.98, 0.96, 0.90);",
+      "  vec3 albedo = mix(orange, cream, bands * 0.5 + 0.5);",
+      "  albedo = mix(albedo, whiteb, smoothstep(0.2, 0.85, bands2) * 0.4);",
+      "  vec3 p = normalize(vPos);",
+      "  float lon = atan(p.z, p.x);",
+      "  float dlon = atan(sin(lon - 1.1), cos(lon - 1.1));",
+      "  float dlat = p.y - (-0.32);",
+      "  float spot = smoothstep(0.34, 0.08, length(vec2(dlon * 1.25, dlat * 2.4)));",
+      "  albedo = mix(albedo, vec3(0.62, 0.07, 0.05), spot);",
+      "  vec3 col = albedo * (0.07 + lit * 0.95);",
+      "  gl_FragColor = vec4(col, 1.0);",
+      "}"
+    ].join("\n")
+  });
+  const jupiter = new THREE.Mesh(new THREE.SphereGeometry(0.20, 48, 48), jupiterMat);
+  scene.add(jupiter);
+
+  const saturnMat = new THREE.ShaderMaterial({
+    uniforms: { sunDir: { value: sunDir } },
+    vertexShader: [
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  float lit = smoothstep(-0.08, 0.4, dot(normalize(vNormal), normalize(sunDir)));",
+      "  vec3 gold = vec3(0.91, 0.78, 0.46);",
+      "  gl_FragColor = vec4(gold * (0.10 + lit * 0.95), 1.0);",
+      "}"
+    ].join("\n")
+  });
+  const saturn = new THREE.Group();
+  saturn.add(new THREE.Mesh(new THREE.SphereGeometry(0.15, 48, 48), saturnMat));
+  const ringMat = new THREE.ShaderMaterial({
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthWrite: false,
+    uniforms: { sunDir: { value: sunDir } },
+    vertexShader: [
+      "varying vec3 vPos;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vPos = position;",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir;",
+      "varying vec3 vPos;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  float r = length(vPos.xy);",
+      "  float cassini = smoothstep(0.012, 0.002, abs(r - 0.285));",
+      "  float grain = 0.45 + 0.55 * sin((r - 0.22) * 95.0);",
+      "  vec3 icy = vec3(0.90, 0.93, 0.97);",
+      "  vec3 gold = vec3(0.86, 0.74, 0.45);",
+      "  vec3 col = mix(gold, icy, grain);",
+      "  col = mix(col, vec3(0.16, 0.12, 0.08), cassini);",
+      "  float lit = smoothstep(-0.2, 0.45, dot(normalize(vNormal), normalize(sunDir)));",
+      "  float alpha = mix(0.88, 0.10, cassini);",
+      "  gl_FragColor = vec4(col * (0.28 + lit * 0.75), alpha);",
+      "}"
+    ].join("\n")
+  });
+  const rings = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.34, 80), ringMat);
+  rings.rotation.x = 1.15;
+  saturn.add(rings);
+  scene.add(saturn);
+
+  const sunBody = new THREE.Mesh(
+    new THREE.SphereGeometry(0.22, 32, 32),
+    new THREE.MeshBasicMaterial({ color: 0xffb000 })
+  );
+  scene.add(sunBody);
+
+  const marker = new THREE.Mesh(
+    new THREE.SphereGeometry(0.025, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xffd27a })
+  );
+  scene.add(marker);
+  const markerGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.045, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xffb45a, transparent: true, opacity: 0.35 })
+  );
+  scene.add(markerGlow);
+
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = new Float32Array(900 * 3);
+  for (let i = 0; i < 900; i++) {
+    const r = 28 + Math.random() * 18;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    starPos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+    starPos[i * 3 + 1] = r * Math.cos(ph);
+    starPos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+  }
+  starGeo.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.045, transparent: true, opacity: 0.85 })));
+
+  const loader = new THREE.TextureLoader();
+  loader.setCrossOrigin("anonymous");
+  loader.load(DAY_URL, function (tex) {
+    earthMat.uniforms.dayMap.value = tex;
+    earthMat.uniforms.hasDay.value = 1;
+  });
+  loader.load(NIGHT_URL, function (tex) {
+    earthMat.uniforms.nightMap.value = tex;
+    earthMat.uniforms.hasNight.value = 1;
+  });
+
+  let orbit = 0.35;
+  let dragging = false;
+  let dragX = 0;
+  let dragEdge = 0;
+  function fitDistance() {
+    var w = window.innerWidth, h = window.innerHeight;
+    var aspect = Math.max(0.2, w / Math.max(1, h));
+    var vHalf = camera.fov * Math.PI / 360;
+    var hHalf = Math.atan(Math.tan(vHalf) * aspect);
+    var extent = 2.35;
+    var distV = extent / Math.tan(vHalf);
+    var distH = extent / Math.tan(hHalf);
+    return Math.max(4.4, distV, distH) * 1.08;
+  }
+  function resize() {
+    const w = window.innerWidth, h = window.innerHeight;
+    renderer.setSize(w, h, true);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener("resize", resize);
+
+  function frame(now) {
+    const sun = solarPoint(now);
+    const m = moonPoint(now, sun);
+    const s = geoVec(sun.dec, sun.subLon, 1);
+    sunDir.copy(s);
+    moon.position.copy(geoVec(m.lat, m.lon, 3.15));
+    moon.lookAt(0, 0, 0);
+    var moonLen = moon.position.length() || 1.0;
+    var phase = (moon.position.x * s.x + moon.position.y * s.y + moon.position.z * s.z) / moonLen;
+    var full = (1.0 - phase) * 0.5;
+    moonMat.uniforms.fullAmt.value = full;
+    var mAng = now.getTime()/1000 * 0.35;
+    moon.position.set(Math.cos(mAng)*1.42, Math.sin(mAng)*0.2, Math.sin(mAng)*1.42);
+    moon.lookAt(0,0,0);
+    var jAng = now.getTime()/1000 * 0.22;
+    jupiter.position.set(Math.cos(jAng)*1.68, 0.50, Math.sin(jAng)*1.68);
+    jupiter.rotation.y = now.getTime()/1000 * 0.55;
+    var sAng = now.getTime()/1000 * 0.09 + 2.1;
+    saturn.position.set(Math.cos(sAng)*1.88, -0.55, Math.sin(sAng)*1.88);
+    const pin = geoVec(place.lat, place.lng, 1.02);
+    marker.position.copy(pin);
+    markerGlow.position.copy(pin);
+    if (dragging && dragEdge) orbit += dragEdge * 0.018;
+    else if (!dragging) orbit += spinSpeed;
+    const TAU = Math.PI * 2;
+    orbit = orbit % TAU;
+    if (orbit < 0) orbit += TAU;
+    const base = geoVec(place.lat, place.lng, fitDistance());
+    const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), orbit);
+    camera.position.copy(base.applyQuaternion(q));
+    camera.position.y += 0.35;
+    camera.lookAt(0, 0.05, 0);
+    camera.updateMatrixWorld(true);
+    var camDist = fitDistance();
+    var sunOrbit = camDist * 1.7;
+    var right = new THREE.Vector3(1, 0, 0).applyQuaternion(camera.quaternion);
+    var forward = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion);
+    var side = s.dot(right);
+    var ahead = s.dot(forward);
+    var earthNdc = new THREE.Vector3(0, 0, 0).project(camera);
+    var ndcX = Math.max(-0.92, Math.min(0.92, side / (Math.abs(side) + Math.abs(ahead) + 0.001)));
+    var aim = new THREE.Vector3(ndcX, earthNdc.y, 0.3);
+    aim.unproject(camera);
+    var ray = aim.sub(camera.position).normalize();
+    var b2 = camera.position.dot(ray);
+    var c2 = camera.position.lengthSq() - sunOrbit * sunOrbit;
+    var discrm = b2 * b2 - c2;
+    var tHit = sunOrbit;
+    if (discrm > 0) {
+      var tA = -b2 + Math.sqrt(discrm);
+      var tB = -b2 - Math.sqrt(discrm);
+      tHit = tA > 0.2 ? tA : tB;
+    }
+    var sunPos = camera.position.clone().addScaledVector(ray, tHit);
+    if (ahead <= 0) sunPos.copy(camera.position).normalize().multiplyScalar(sunOrbit);
+    sunDir.copy(sunPos).normalize();
+    sunBody.position.copy(sunPos);
+    sunBody.scale.setScalar(Math.max(sunPos.length(), 1) / 2.2);
+    var toSunX = sunBody.position.x - camera.position.x;
+    var toSunY = sunBody.position.y - camera.position.y;
+    var toSunZ = sunBody.position.z - camera.position.z;
+    var fwdX = -camera.position.x;
+    var fwdY = 0.05 - camera.position.y;
+    var fwdZ = -camera.position.z;
+    var toSunLen = Math.hypot(toSunX, toSunY, toSunZ) || 1;
+    var fwdLen = Math.hypot(fwdX, fwdY, fwdZ) || 1;
+    var facing = (toSunX * fwdX + toSunY * fwdY + toSunZ * fwdZ) / (toSunLen * fwdLen);
+    var showSun = facing > 0.5;
+    sunBody.visible = showSun;
+    renderer.render(scene, camera);
+  }
+
+  canvas.style.touchAction = "none";
+  canvas.addEventListener("pointerdown", function (e) {
+    if (e.button !== undefined && e.button !== 0) return;
+    dragging = true;
+    dragX = e.clientX;
+    if (canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", function (e) {
+    if (!dragging) return;
+    var dx = e.clientX - dragX;
+    if (e.pointerType !== "touch" && e.movementX) dx = e.movementX;
+    orbit += dx * 0.01;
+    dragX = e.clientX;
+    var margin = 28;
+    if (e.clientX <= margin) dragEdge = -1;
+    else if (e.clientX >= window.innerWidth - margin) dragEdge = 1;
+    else dragEdge = 0;
+  });
+  function endDrag() { dragging = false; dragEdge = 0; }
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
+
+  canvas.style.display = "block";
+  document.body.classList.add("globe-on");
+  document.getElementById("sky").style.background = "radial-gradient(circle at 50% 42%, #12182a 0%, #070910 62%, #05060c 100%)";
+  globe = { frame: frame };
+  (function loop() {
+    frame(new Date());
+    requestAnimationFrame(loop);
+  })();
+}
+
+function tick() {
+  const now = new Date();
+  let rise = localSun(now, place.lat, place.lng, true);
+  let set = localSun(now, place.lat, place.lng, false);
+  if (!rise || !set) {
+    rise = rise || now;
+    set = set || now;
+  }
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const nextRise = now < rise ? rise : localSun(tomorrow, place.lat, place.lng, true);
+  if (!globe) paintSky(now, rise, set);
+
+  function countdown(target) {
+    if (!target || isNaN(target.getTime())) return "--:--:--";
+    const ms = Math.max(0, target - now);
+    const hh = Math.floor(ms / 3600000);
+    const mm = Math.floor((ms % 3600000) / 60000);
+    const ss = Math.floor((ms % 60000) / 1000);
+    return pad(hh) + ":" + pad(mm) + ":" + pad(ss);
+  }
+  const nextSet = now < set ? set : localSun(tomorrow, place.lat, place.lng, false);
+  document.getElementById("count-rise").textContent = countdown(nextRise || rise);
+  document.getElementById("count-set").textContent = countdown(nextSet || set);
+  document.getElementById("rise").textContent = fmt(rise);
+  document.getElementById("set").textContent = fmt(set);
+  document.getElementById("now").textContent = "Now " + fmtFull(now);
+  let phase = "Night";
+  if (now >= rise && now < new Date(rise.getTime() + 45 * 60000)) phase = "Sunrise";
+  else if (now >= set - 45 * 60000 && now < set) phase = "Sunset";
+  else if (now >= rise && now < set) phase = "Daylight";
+  else if (now >= set && now < set.getTime() + 40 * 60000) phase = "Dusk";
+  else if (now < rise && now > rise.getTime() - 40 * 60000) phase = "Dawn";
+  document.getElementById("phase").textContent = phase;
+  const nameEl = document.getElementById("city-name");
+  if (nameEl && !place.lock) nameEl.textContent = place.name;
+  renderMonth();
+  try { paintRocks(); } catch (err) {}
+}
+
+let monthKey = "";
+function civilNow() {
+  if (place.tz) {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: place.tz, year: "numeric", month: "numeric", day: "numeric"
+    }).formatToParts(new Date());
+    const g = function (type) { return Number(parts.find(function (p) { return p.type === type; }).value); };
+    return { y: g("year"), m: g("month"), d: g("day") };
+  }
+  const n = new Date();
+  return { y: n.getFullYear(), m: n.getMonth() + 1, d: n.getDate() };
+}
+function dayLength(ms) {
+  const mins = Math.round(ms / 60000);
+  return Math.floor(mins / 60) + "h " + pad(mins % 60) + "m";
+}
+function renderMonth() {
+  const body = document.getElementById("month-body");
+  const title = document.getElementById("month-title");
+  if (!body || !title) return;
+  const civ = civilNow();
+  const key = [place.lat, place.lng, place.tz || "", civ.y, civ.m].join("|");
+  if (key === monthKey) return;
+  monthKey = key;
+  const days = new Date(civ.y, civ.m, 0).getDate();
+  title.textContent = new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(new Date(civ.y, civ.m - 1, 1));
+  const rows = [];
+  for (let d = 1; d <= days; d++) {
+    const probe = new Date(civ.y, civ.m - 1, d, 12, 0, 0);
+    const rise = localSun(probe, place.lat, place.lng, true);
+    const set = localSun(probe, place.lat, place.lng, false);
+    let riseS = "\u2014", setS = "\u2014", length = "\u2014", noon = "\u2014";
+    if (rise && set) {
+      riseS = fmt(rise);
+      setS = fmt(set);
+      let ms = set.getTime() - rise.getTime();
+      if (ms < 0) ms += 86400000;
+      length = dayLength(ms);
+      noon = fmt(new Date(rise.getTime() + ms / 2));
+    }
+    const label = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(probe);
+    const cls = d === civ.d ? " class=\"today\"" : "";
+    rows.push("<tr" + cls + "><td>" + label + "</td><td>" + riseS + "</td><td>" + setS + "</td><td>" + length + "</td><td>" + noon + "</td></tr>");
+  }
+  body.innerHTML = rows.join("");
+  const row = body.querySelector(".today");
+  const sc = body.closest(".month-scroll");
+  if (row && sc) {
+    const top = row.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop;
+    sc.scrollTop = Math.max(0, top - 28);
+  }
+}
+
+function setPlace(lat, lng, name, note) {
+  if (place.lock) return;
+  place = { name: name, lat: lat, lng: lng, exact: true, tz: "", lock: false };
+  document.getElementById("note").textContent = note;
+  tick();
+}
+
+if (window.THREE && hasWebGL()) {
+  try { initGlobe(); }
+  catch (err) { globe = null; }
+}
+
+if (!place.lock && navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    function (pos) {
+      const latitude = pos.coords.latitude, longitude = pos.coords.longitude;
+      const near = nearestCity(latitude, longitude);
+      const name = near.km < 40 ? near.name : "Near " + near.name;
+      setPlace(latitude, longitude, name, near.km < 40
+        ? "Using your location. The gold pin is you."
+        : "Closest listed city is " + near.name + ", about " + Math.round(near.km) + " km away. Times and the pin use your coordinates.");
+    },
+    function () {
+      document.getElementById("note").textContent = globe
+        ? "Location was denied. Showing Johannesburg. The gold pin is the city."
+        : "Location was denied. Showing Johannesburg.";
+      tick();
+    },
+    { enableHighAccuracy: false, timeout: 8000, maximumAge: 600000 }
+  );
+}
+if (globe && !place.lock) {
+  document.getElementById("note").textContent = "Using Johannesburg until location is allowed. The gold pin is the city.";
+}
+
+const picker = document.getElementById("city-picker");
+if (picker) {
+  const here = (location.pathname.match(/sunrise-([a-z0-9-]+)\.html$/) || [])[1];
+  const match = CITY_PICK.find(function (row) { return row[0] === place.name; });
+  picker.value = here || (match ? match[1] : "johannesburg");
+  picker.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+  picker.addEventListener("change", function () { applyCity(picker.value, true); });
+}
+const spin = document.getElementById("spin");
+if (spin) {
+  spin.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+  spin.addEventListener("input", function () {
+    spinSpeed = Number(spin.value) / 100 * 0.008;
+  });
+}
+window.addEventListener("popstate", function () {
+  const slug = (location.pathname.match(/sunrise-([a-z0-9-]+)\.html$/) || [])[1];
+  if (slug) applyCity(slug, false);
+});
+
+let rockRows = null;
+let rockPha = null;
+let rockNote = "";
+let rockKey = "";
+const ROCK_FALLBACK = [{"name": "2026 TF", "cd": "2026-Oct-04 15:07", "dist": 0.0134168956514891, "dmin": 0.0133561659371254, "dmax": 0.013477622753149, "h": 26.234}, {"name": "2026 TX", "cd": "2026-Oct-08 00:19", "dist": 0.00562871652214064, "dmin": 0.0056098959138621, "dmax": 0.00564753671418684, "h": 27.73}, {"name": "2026 TS", "cd": "2026-Oct-18 08:09", "dist": 0.00608076884984613, "dmin": 0.00599250564955, "dmax": 0.00616903632420318, "h": 24.041}, {"name": "2025 UK9", "cd": "2026-Oct-31 02:35", "dist": 0.0021032915876806, "dmin": 0.0005765819642422, "dmax": 0.00377866262208323, "h": 29.83}];
+const ROCK_PHA_FALLBACK = {"name": "2020 OP3", "cd": "2027-Jan-28 23:33", "dist": 0.0195088943371906, "dmin": 0.019506828513641, "dmax": 0.0195109602095019, "h": 20.95};
+function rockWhen(date) {
+  const opt = { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" };
+  if (place.tz) opt.timeZone = place.tz;
+  return new Intl.DateTimeFormat("en-GB", opt).format(date);
+}
+function rockSize(h) {
+  const metres = 1329e3 * Math.pow(10, -0.2 * h) / Math.sqrt(0.14);
+  if (metres >= 1000) return "about " + (metres / 1000).toFixed(1) + " km";
+  return "about " + Math.max(1, Math.round(metres)) + " m";
+}
+function rockParse(cd) {
+  const names = { Jan: 0, Feb: 1, Mar: 2, Apr: 3, May: 4, Jun: 5, Jul: 6, Aug: 7, Sep: 8, Oct: 9, Nov: 10, Dec: 11 };
+  const m = String(cd).match(/(\d{4})-([A-Za-z]{3})-(\d{2}) (\d{2}):(\d{2})/);
+  if (!m) return null;
+  return new Date(Date.UTC(+m[1], names[m[2]], +m[3], +m[4], +m[5]));
+}
+function rockItem(row) {
+  const LD = 0.002569555;
+  const AU = 149597870.7;
+  const when = rockParse(row.cd);
+  const ld = row.dist / LD;
+  const km = Math.round(row.dist * AU);
+  const rough = row.dmax - row.dmin > row.dist * 0.5;
+  const bits = rockWhen(when) + " · " + ld.toFixed(1) + " Moon-distances · " + km.toLocaleString("en-GB") + " km";
+  return "<li><b>" + row.name + "</b><br>" + bits + "<br>" + rockSize(row.h) + " across" + (rough ? " · distance still rough" : "") + "</li>";
+}
+function paintRocks() {
+  const lead = document.getElementById("rocks-lead");
+  const list = document.getElementById("rocks-list");
+  const phaEl = document.getElementById("rocks-pha");
+  if (!lead || !list || !phaEl || !rockRows) return;
+  const key = (place.tz || "local") + "|" + rockNote;
+  if (key === rockKey && list.childElementCount) return;
+  rockKey = key;
+  lead.textContent = rockNote;
+  list.innerHTML = rockRows.map(rockItem).join("");
+  const pha = rockPha;
+  if (!pha) { phaEl.textContent = ""; return; }
+  const when = rockWhen(rockParse(pha.cd));
+  const ld = (pha.dist / 0.002569555).toFixed(1);
+  phaEl.textContent = "The nearest larger one on NASA’s hazard list is " + pha.name + ", " + when + ". It stays about " + ld + " Moon-distances out, " + rockSize(pha.h) + " across. That’s a miss, not a warning.";
+}
+function rockFrom(r) {
+  let name = String(r[11] || r[0]).trim();
+  if (name.charAt(0) === "(" && name.charAt(name.length - 1) === ")") name = name.slice(1, -1);
+  return { name: name, cd: r[3], dist: +r[4], dmin: +r[5], dmax: +r[6], h: +r[10], sig: r[9] };
+}
+function loadRocks() {
+  const start = new Date();
+  const end = new Date(start.getTime() + 122 * 86400000);
+  const ymd = function (d) {
+    return d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + pad(d.getUTCDate());
+  };
+  const url = "https://ssd-api.jpl.nasa.gov/cad.api?date-min=" + ymd(start) + "&date-max=" + ymd(end) + "&dist-max=0.05&sort=date&fullname=true";
+  const phaUrl = "https://ssd-api.jpl.nasa.gov/cad.api?date-min=" + ymd(start) + "&date-max=" + ymd(end) + "&dist-max=0.2&pha=true&sort=dist&fullname=true";
+  function useFallback() {
+    rockRows = ROCK_FALLBACK;
+    rockPha = ROCK_PHA_FALLBACK;
+    rockNote = "No need to panic. These all miss Earth. NASA’s live feed can’t be read from a page opened as a file, so this is the list from 4 October 2026.";
+    rockKey = "";
+    paintRocks();
+  }
+  Promise.all([
+    fetch(url).then(function (res) { if (!res.ok) throw new Error("cad"); return res.json(); }),
+    fetch(phaUrl).then(function (res) { if (!res.ok) throw new Error("pha"); return res.json(); })
+  ]).then(function (both) {
+    const nowMs = Date.now();
+    const picked = [];
+    (both[0].data || []).forEach(function (r) {
+      const row = rockFrom(r);
+      const when = rockParse(row.cd);
+      if (!when || when.getTime() < nowMs - 30 * 60000) return;
+      if (String(row.sig).indexOf("_") >= 0) return;
+      if (row.dist > 0.0155) return;
+      picked.push(row);
+    });
+    rockRows = picked.slice(0, 4);
+    if (!rockRows.length) return useFallback();
+    let pha = null;
+    (both[1].data || []).some(function (r) {
+      const row = rockFrom(r);
+      const when = rockParse(row.cd);
+      if (when && when.getTime() >= nowMs - 30 * 60000) { pha = row; return true; }
+      return false;
+    });
+    rockPha = pha || ROCK_PHA_FALLBACK;
+    rockNote = "No need to panic. These are the next close passes on NASA’s list, and every one of them misses Earth. Sizes are guessed from brightness.";
+    rockKey = "";
+    paintRocks();
+  }).catch(useFallback);
+}
+
+tick();
+setInterval(tick, 1000);
+loadRocks();
+</script>
+</body>
+</html>

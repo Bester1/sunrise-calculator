@@ -1,0 +1,802 @@
+[
+  {
+    "name": "Accra",
+    "slug": "accra",
+    "lat": 5.55602,
+    "lng": -0.1969,
+    "tz": "Africa/Accra",
+    "geoname_id": 2306104
+  },
+  {
+    "name": "Addis Ababa",
+    "slug": "addis-ababa",
+    "lat": 9.02497,
+    "lng": 38.74689,
+    "tz": "Africa/Addis_Ababa",
+    "geoname_id": 344979
+  },
+  {
+    "name": "Algiers",
+    "slug": "algiers",
+    "lat": 36.73225,
+    "lng": 3.08746,
+    "tz": "Africa/Algiers",
+    "geoname_id": 2507480
+  },
+  {
+    "name": "Amsterdam",
+    "slug": "amsterdam",
+    "lat": 52.37403,
+    "lng": 4.88969,
+    "tz": "Europe/Amsterdam",
+    "geoname_id": 2759794
+  },
+  {
+    "name": "Antananarivo",
+    "slug": "antananarivo",
+    "lat": -18.91368,
+    "lng": 47.53613,
+    "tz": "Indian/Antananarivo",
+    "geoname_id": 1070940
+  },
+  {
+    "name": "Athens",
+    "slug": "athens",
+    "lat": 37.98376,
+    "lng": 23.72784,
+    "tz": "Europe/Athens",
+    "geoname_id": 264371
+  },
+  {
+    "name": "Auckland",
+    "slug": "auckland",
+    "lat": -36.84853,
+    "lng": 174.76349,
+    "tz": "Pacific/Auckland",
+    "geoname_id": 2193733
+  },
+  {
+    "name": "Bangkok",
+    "slug": "bangkok",
+    "lat": 13.75398,
+    "lng": 100.50144,
+    "tz": "Asia/Bangkok",
+    "geoname_id": 1609350
+  },
+  {
+    "name": "Barcelona",
+    "slug": "barcelona",
+    "lat": 41.38879,
+    "lng": 2.15899,
+    "tz": "Europe/Madrid",
+    "geoname_id": 3128760
+  },
+  {
+    "name": "Beijing",
+    "slug": "beijing",
+    "lat": 39.9075,
+    "lng": 116.39723,
+    "tz": "Asia/Shanghai",
+    "geoname_id": 1816670
+  },
+  {
+    "name": "Bengaluru",
+    "slug": "bengaluru",
+    "lat": 12.97194,
+    "lng": 77.59369,
+    "tz": "Asia/Kolkata",
+    "geoname_id": 1277333
+  },
+  {
+    "name": "Berlin",
+    "slug": "berlin",
+    "lat": 52.52,
+    "lng": 13.405,
+    "tz": "Europe/Berlin",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Bloemfontein",
+    "slug": "bloemfontein",
+    "lat": -29.12107,
+    "lng": 26.214,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": 1018725
+  },
+  {
+    "name": "Bogotá",
+    "slug": "bogota",
+    "lat": 4.60971,
+    "lng": -74.08175,
+    "tz": "America/Bogota",
+    "geoname_id": 3688689
+  },
+  {
+    "name": "Boston",
+    "slug": "boston",
+    "lat": 42.35843,
+    "lng": -71.05977,
+    "tz": "America/New_York",
+    "geoname_id": 4930956
+  },
+  {
+    "name": "Brussels",
+    "slug": "brussels",
+    "lat": 50.85045,
+    "lng": 4.34878,
+    "tz": "Europe/Brussels",
+    "geoname_id": 2800866
+  },
+  {
+    "name": "Budapest",
+    "slug": "budapest",
+    "lat": 47.49835,
+    "lng": 19.04045,
+    "tz": "Europe/Budapest",
+    "geoname_id": 3054643
+  },
+  {
+    "name": "Buenos Aires",
+    "slug": "buenos-aires",
+    "lat": -34.61315,
+    "lng": -58.37723,
+    "tz": "America/Argentina/Buenos_Aires",
+    "geoname_id": 3435910
+  },
+  {
+    "name": "Cairo",
+    "slug": "cairo",
+    "lat": 30.06263,
+    "lng": 31.24967,
+    "tz": "Africa/Cairo",
+    "geoname_id": 360630
+  },
+  {
+    "name": "Cape Town",
+    "slug": "cape-town",
+    "lat": -33.9249,
+    "lng": 18.4241,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Caracas",
+    "slug": "caracas",
+    "lat": 10.48801,
+    "lng": -66.87919,
+    "tz": "America/Caracas",
+    "geoname_id": 3646738
+  },
+  {
+    "name": "Casablanca",
+    "slug": "casablanca",
+    "lat": 33.58831,
+    "lng": -7.61138,
+    "tz": "Africa/Casablanca",
+    "geoname_id": 2553604
+  },
+  {
+    "name": "Chicago",
+    "slug": "chicago",
+    "lat": 41.85003,
+    "lng": -87.65005,
+    "tz": "America/Chicago",
+    "geoname_id": 4887398
+  },
+  {
+    "name": "Colombo",
+    "slug": "colombo",
+    "lat": 6.93548,
+    "lng": 79.84868,
+    "tz": "Asia/Colombo",
+    "geoname_id": 1248991
+  },
+  {
+    "name": "Copenhagen",
+    "slug": "copenhagen",
+    "lat": 55.67594,
+    "lng": 12.56553,
+    "tz": "Europe/Copenhagen",
+    "geoname_id": 2618425
+  },
+  {
+    "name": "Dakar",
+    "slug": "dakar",
+    "lat": 14.6937,
+    "lng": -17.44406,
+    "tz": "Africa/Dakar",
+    "geoname_id": 2253354
+  },
+  {
+    "name": "Dar es Salaam",
+    "slug": "dar-es-salaam",
+    "lat": -6.82349,
+    "lng": 39.26951,
+    "tz": "Africa/Dar_es_Salaam",
+    "geoname_id": 160263
+  },
+  {
+    "name": "Delhi",
+    "slug": "delhi",
+    "lat": 28.65195,
+    "lng": 77.23149,
+    "tz": "Asia/Kolkata",
+    "geoname_id": 1273294
+  },
+  {
+    "name": "Denver",
+    "slug": "denver",
+    "lat": 39.73915,
+    "lng": -104.9847,
+    "tz": "America/Denver",
+    "geoname_id": 5419384
+  },
+  {
+    "name": "Dhaka",
+    "slug": "dhaka",
+    "lat": 23.7104,
+    "lng": 90.40744,
+    "tz": "Asia/Dhaka",
+    "geoname_id": 1185241
+  },
+  {
+    "name": "Dubai",
+    "slug": "dubai",
+    "lat": 25.2048,
+    "lng": 55.2708,
+    "tz": "Asia/Dubai",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Dublin",
+    "slug": "dublin",
+    "lat": 53.33306,
+    "lng": -6.24889,
+    "tz": "Europe/Dublin",
+    "geoname_id": 2964574
+  },
+  {
+    "name": "Durban",
+    "slug": "durban",
+    "lat": -29.8579,
+    "lng": 31.0292,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": 1007311
+  },
+  {
+    "name": "George",
+    "slug": "george",
+    "lat": -33.963,
+    "lng": 22.46173,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": 1002145
+  },
+  {
+    "name": "Gqeberha",
+    "slug": "gqeberha",
+    "lat": -33.96109,
+    "lng": 25.61494,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": 964420
+  },
+  {
+    "name": "Hanoi",
+    "slug": "hanoi",
+    "lat": 21.0245,
+    "lng": 105.84117,
+    "tz": "Asia/Bangkok",
+    "geoname_id": 1581130
+  },
+  {
+    "name": "Havana",
+    "slug": "havana",
+    "lat": 23.13302,
+    "lng": -82.38304,
+    "tz": "America/Havana",
+    "geoname_id": 3553478
+  },
+  {
+    "name": "Hong Kong",
+    "slug": "hong-kong",
+    "lat": 22.27832,
+    "lng": 114.17469,
+    "tz": "Asia/Hong_Kong",
+    "geoname_id": 1819729
+  },
+  {
+    "name": "Honolulu",
+    "slug": "honolulu",
+    "lat": 21.30694,
+    "lng": -157.85833,
+    "tz": "Pacific/Honolulu",
+    "geoname_id": 5856195
+  },
+  {
+    "name": "Houston",
+    "slug": "houston",
+    "lat": 29.76328,
+    "lng": -95.36327,
+    "tz": "America/Chicago",
+    "geoname_id": 4699066
+  },
+  {
+    "name": "Istanbul",
+    "slug": "istanbul",
+    "lat": 41.01384,
+    "lng": 28.94966,
+    "tz": "Europe/Istanbul",
+    "geoname_id": 745044
+  },
+  {
+    "name": "Jakarta",
+    "slug": "jakarta",
+    "lat": -6.21462,
+    "lng": 106.84513,
+    "tz": "Asia/Jakarta",
+    "geoname_id": 1642911
+  },
+  {
+    "name": "Johannesburg",
+    "slug": "johannesburg",
+    "lat": -26.2041,
+    "lng": 28.0473,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Kampala",
+    "slug": "kampala",
+    "lat": 0.31628,
+    "lng": 32.58219,
+    "tz": "Africa/Kampala",
+    "geoname_id": 232422
+  },
+  {
+    "name": "Karachi",
+    "slug": "karachi",
+    "lat": 24.8608,
+    "lng": 67.0104,
+    "tz": "Asia/Karachi",
+    "geoname_id": 1174872
+  },
+  {
+    "name": "Kathmandu",
+    "slug": "kathmandu",
+    "lat": 27.70169,
+    "lng": 85.3206,
+    "tz": "Asia/Kathmandu",
+    "geoname_id": 1283240
+  },
+  {
+    "name": "Kinshasa",
+    "slug": "kinshasa",
+    "lat": -4.32758,
+    "lng": 15.31357,
+    "tz": "Africa/Kinshasa",
+    "geoname_id": 2314302
+  },
+  {
+    "name": "Kuala Lumpur",
+    "slug": "kuala-lumpur",
+    "lat": 3.1412,
+    "lng": 101.68653,
+    "tz": "Asia/Kuala_Lumpur",
+    "geoname_id": 1735161
+  },
+  {
+    "name": "Lagos",
+    "slug": "lagos",
+    "lat": 6.5244,
+    "lng": 3.3792,
+    "tz": "Africa/Lagos",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Lima",
+    "slug": "lima",
+    "lat": -12.04318,
+    "lng": -77.02824,
+    "tz": "America/Lima",
+    "geoname_id": 3936456
+  },
+  {
+    "name": "Lisbon",
+    "slug": "lisbon",
+    "lat": 38.72509,
+    "lng": -9.1498,
+    "tz": "Europe/Lisbon",
+    "geoname_id": 2267057
+  },
+  {
+    "name": "London",
+    "slug": "london",
+    "lat": 51.5074,
+    "lng": -0.1278,
+    "tz": "Europe/London",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Los Angeles",
+    "slug": "los-angeles",
+    "lat": 34.05223,
+    "lng": -118.24368,
+    "tz": "America/Los_Angeles",
+    "geoname_id": 5368361
+  },
+  {
+    "name": "Lusaka",
+    "slug": "lusaka",
+    "lat": -15.40669,
+    "lng": 28.28713,
+    "tz": "Africa/Lusaka",
+    "geoname_id": 909137
+  },
+  {
+    "name": "Madrid",
+    "slug": "madrid",
+    "lat": 40.4165,
+    "lng": -3.70256,
+    "tz": "Europe/Madrid",
+    "geoname_id": 3117735
+  },
+  {
+    "name": "Manila",
+    "slug": "manila",
+    "lat": 14.6042,
+    "lng": 120.9822,
+    "tz": "Asia/Manila",
+    "geoname_id": 1701668
+  },
+  {
+    "name": "Maputo",
+    "slug": "maputo",
+    "lat": -25.96553,
+    "lng": 32.58322,
+    "tz": "Africa/Maputo",
+    "geoname_id": 1040652
+  },
+  {
+    "name": "Melbourne",
+    "slug": "melbourne",
+    "lat": -37.814,
+    "lng": 144.96332,
+    "tz": "Australia/Melbourne",
+    "geoname_id": 2158177
+  },
+  {
+    "name": "Mexico City",
+    "slug": "mexico-city",
+    "lat": 19.42847,
+    "lng": -99.12766,
+    "tz": "America/Mexico_City",
+    "geoname_id": 3530597
+  },
+  {
+    "name": "Miami",
+    "slug": "miami",
+    "lat": 25.77427,
+    "lng": -80.19366,
+    "tz": "America/New_York",
+    "geoname_id": 4164138
+  },
+  {
+    "name": "Montevideo",
+    "slug": "montevideo",
+    "lat": -34.90328,
+    "lng": -56.18816,
+    "tz": "America/Montevideo",
+    "geoname_id": 3441575
+  },
+  {
+    "name": "Montréal",
+    "slug": "montreal",
+    "lat": 45.50884,
+    "lng": -73.58781,
+    "tz": "America/Toronto",
+    "geoname_id": 6077243
+  },
+  {
+    "name": "Moscow",
+    "slug": "moscow",
+    "lat": 55.75204,
+    "lng": 37.61781,
+    "tz": "Europe/Moscow",
+    "geoname_id": 524901
+  },
+  {
+    "name": "Mumbai",
+    "slug": "mumbai",
+    "lat": 19.07283,
+    "lng": 72.88261,
+    "tz": "Asia/Kolkata",
+    "geoname_id": 1275339
+  },
+  {
+    "name": "Nairobi",
+    "slug": "nairobi",
+    "lat": -1.28333,
+    "lng": 36.81667,
+    "tz": "Africa/Nairobi",
+    "geoname_id": 184745
+  },
+  {
+    "name": "New York",
+    "slug": "new-york",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "tz": "America/New_York",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Osaka",
+    "slug": "osaka",
+    "lat": 34.69379,
+    "lng": 135.50107,
+    "tz": "Asia/Tokyo",
+    "geoname_id": 1853909
+  },
+  {
+    "name": "Oslo",
+    "slug": "oslo",
+    "lat": 59.91273,
+    "lng": 10.74609,
+    "tz": "Europe/Oslo",
+    "geoname_id": 3143244
+  },
+  {
+    "name": "Panama City",
+    "slug": "panama-city",
+    "lat": 8.9936,
+    "lng": -79.51973,
+    "tz": "America/Panama",
+    "geoname_id": 3703443
+  },
+  {
+    "name": "Paris",
+    "slug": "paris",
+    "lat": 48.8566,
+    "lng": 2.3522,
+    "tz": "Europe/Paris",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Perth",
+    "slug": "perth",
+    "lat": -31.95224,
+    "lng": 115.8614,
+    "tz": "Australia/Perth",
+    "geoname_id": 2063523
+  },
+  {
+    "name": "Pietermaritzburg",
+    "slug": "pietermaritzburg",
+    "lat": -29.61679,
+    "lng": 30.39278,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": 965301
+  },
+  {
+    "name": "Prague",
+    "slug": "prague",
+    "lat": 50.08804,
+    "lng": 14.42076,
+    "tz": "Europe/Prague",
+    "geoname_id": 3067696
+  },
+  {
+    "name": "Pretoria",
+    "slug": "pretoria",
+    "lat": -25.74486,
+    "lng": 28.18783,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": 964137
+  },
+  {
+    "name": "Quito",
+    "slug": "quito",
+    "lat": -0.22985,
+    "lng": -78.52495,
+    "tz": "America/Guayaquil",
+    "geoname_id": 3652462
+  },
+  {
+    "name": "Reykjavík",
+    "slug": "reykjavik",
+    "lat": 64.13548,
+    "lng": -21.89541,
+    "tz": "Atlantic/Reykjavik",
+    "geoname_id": 3413829
+  },
+  {
+    "name": "Rio de Janeiro",
+    "slug": "rio-de-janeiro",
+    "lat": -22.90642,
+    "lng": -43.18223,
+    "tz": "America/Sao_Paulo",
+    "geoname_id": 3451190
+  },
+  {
+    "name": "Riyadh",
+    "slug": "riyadh",
+    "lat": 24.68773,
+    "lng": 46.72185,
+    "tz": "Asia/Riyadh",
+    "geoname_id": 108410
+  },
+  {
+    "name": "Rome",
+    "slug": "rome",
+    "lat": 41.89193,
+    "lng": 12.51133,
+    "tz": "Europe/Rome",
+    "geoname_id": 3169070
+  },
+  {
+    "name": "San Francisco",
+    "slug": "san-francisco",
+    "lat": 37.77493,
+    "lng": -122.41942,
+    "tz": "America/Los_Angeles",
+    "geoname_id": 5391959
+  },
+  {
+    "name": "Santiago",
+    "slug": "santiago",
+    "lat": -33.45694,
+    "lng": -70.64827,
+    "tz": "America/Santiago",
+    "geoname_id": 3871336
+  },
+  {
+    "name": "São Paulo",
+    "slug": "sao-paulo",
+    "lat": -23.5475,
+    "lng": -46.63611,
+    "tz": "America/Sao_Paulo",
+    "geoname_id": 3448439
+  },
+  {
+    "name": "Seoul",
+    "slug": "seoul",
+    "lat": 37.566,
+    "lng": 126.9784,
+    "tz": "Asia/Seoul",
+    "geoname_id": 1835848
+  },
+  {
+    "name": "Shanghai",
+    "slug": "shanghai",
+    "lat": 31.22222,
+    "lng": 121.45806,
+    "tz": "Asia/Shanghai",
+    "geoname_id": 1796236
+  },
+  {
+    "name": "Singapore",
+    "slug": "singapore",
+    "lat": 1.28967,
+    "lng": 103.85007,
+    "tz": "Asia/Singapore",
+    "geoname_id": 1880252
+  },
+  {
+    "name": "Stellenbosch",
+    "slug": "stellenbosch",
+    "lat": -33.93462,
+    "lng": 18.86676,
+    "tz": "Africa/Johannesburg",
+    "geoname_id": 3361025
+  },
+  {
+    "name": "Stockholm",
+    "slug": "stockholm",
+    "lat": 59.32938,
+    "lng": 18.06871,
+    "tz": "Europe/Stockholm",
+    "geoname_id": 2673730
+  },
+  {
+    "name": "Sydney",
+    "slug": "sydney",
+    "lat": -33.8688,
+    "lng": 151.2093,
+    "tz": "Australia/Sydney",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Taipei",
+    "slug": "taipei",
+    "lat": 25.05306,
+    "lng": 121.52639,
+    "tz": "Asia/Taipei",
+    "geoname_id": 1668341
+  },
+  {
+    "name": "Tehran",
+    "slug": "tehran",
+    "lat": 35.69439,
+    "lng": 51.42151,
+    "tz": "Asia/Tehran",
+    "geoname_id": 112931
+  },
+  {
+    "name": "Tel Aviv",
+    "slug": "tel-aviv",
+    "lat": 32.08088,
+    "lng": 34.78057,
+    "tz": "Asia/Jerusalem",
+    "geoname_id": 293397
+  },
+  {
+    "name": "Tokyo",
+    "slug": "tokyo",
+    "lat": 35.6762,
+    "lng": 139.6503,
+    "tz": "Asia/Tokyo",
+    "geoname_id": "locked"
+  },
+  {
+    "name": "Toronto",
+    "slug": "toronto",
+    "lat": 43.70643,
+    "lng": -79.39864,
+    "tz": "America/Toronto",
+    "geoname_id": 6167865
+  },
+  {
+    "name": "Tunis",
+    "slug": "tunis",
+    "lat": 36.81897,
+    "lng": 10.16579,
+    "tz": "Africa/Tunis",
+    "geoname_id": 2464470
+  },
+  {
+    "name": "Vancouver",
+    "slug": "vancouver",
+    "lat": 49.24966,
+    "lng": -123.11934,
+    "tz": "America/Vancouver",
+    "geoname_id": 6173331
+  },
+  {
+    "name": "Vienna",
+    "slug": "vienna",
+    "lat": 48.20849,
+    "lng": 16.37208,
+    "tz": "Europe/Vienna",
+    "geoname_id": 2761369
+  },
+  {
+    "name": "Warsaw",
+    "slug": "warsaw",
+    "lat": 52.22977,
+    "lng": 21.01178,
+    "tz": "Europe/Warsaw",
+    "geoname_id": 756135
+  },
+  {
+    "name": "Washington",
+    "slug": "washington",
+    "lat": 38.89511,
+    "lng": -77.03637,
+    "tz": "America/New_York",
+    "geoname_id": 4140963
+  },
+  {
+    "name": "Wellington",
+    "slug": "wellington",
+    "lat": -41.28664,
+    "lng": 174.77557,
+    "tz": "Pacific/Auckland",
+    "geoname_id": 2179537
+  },
+  {
+    "name": "Windhoek",
+    "slug": "windhoek",
+    "lat": -22.55941,
+    "lng": 17.08323,
+    "tz": "Africa/Windhoek",
+    "geoname_id": 3352136
+  }
+]
