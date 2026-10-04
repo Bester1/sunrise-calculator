@@ -1130,6 +1130,7 @@ function initGlobe() {
   resize();
   window.addEventListener("resize", resize);
   var zoomScale = 1;
+  var placedDist = 0;
   var controls = new THREE.OrbitControls(camera, canvas);
   controls.enableRotate = false;
   controls.enablePan = false;
@@ -1139,6 +1140,30 @@ function initGlobe() {
   controls.target.set(0, 0.05, 0);
   controls.touches.ONE = THREE.TOUCH.ROTATE;
   controls.touches.TWO = THREE.TOUCH.DOLLY_PAN;
+  var _ndcCenter = new THREE.Vector3();
+  function ringReach(r) {
+    var cam = geoVec(place.lat, place.lng, r);
+    cam.y += 0.35;
+    camera.position.copy(cam);
+    camera.lookAt(0, 0.05, 0);
+    camera.updateMatrixWorld(true);
+    _ndcCenter.set(0, 0, 0).project(camera);
+    var dist = cam.length();
+    var alpha = Math.asin(Math.min(0.999, 1.08 / Math.max(dist, 1.09)));
+    var vHalf = camera.fov * Math.PI / 360;
+    var yN = Math.tan(alpha) / Math.tan(vHalf);
+    var xN = yN / Math.max(0.2, camera.aspect);
+    return Math.max(Math.abs(_ndcCenter.x) + xN, Math.abs(_ndcCenter.y) + yN);
+  }
+  function fillDistance() {
+    var lo = 1.35, hi = fitDistance();
+    for (var i = 0; i < 18; i++) {
+      var mid = (lo + hi) * 0.5;
+      if (ringReach(mid) > 0.98) lo = mid;
+      else hi = mid;
+    }
+    return hi;
+  }
 
   function frame(now) {
     const sun = solarPoint(now);
@@ -1167,7 +1192,14 @@ function initGlobe() {
     const TAU = Math.PI * 2;
     orbit = orbit % TAU;
     if (orbit < 0) orbit += TAU;
+    if (placedDist > 0) {
+      var lived = camera.position.distanceTo(controls.target);
+      if (Math.abs(lived - placedDist) > 0.001) zoomScale *= lived / placedDist;
+    }
     var frameDist = fitDistance();
+    var nearDist = Math.min(frameDist, fillDistance());
+    var nearScale = nearDist / frameDist;
+    zoomScale = Math.min(1, Math.max(nearScale, zoomScale));
     var r = frameDist * zoomScale;
     const base = geoVec(place.lat, place.lng, r);
     const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), orbit);
@@ -1175,15 +1207,20 @@ function initGlobe() {
     camera.position.y += 0.35;
     camera.lookAt(0, 0.05, 0);
     var before = camera.position.distanceTo(controls.target);
+    var nearCam = geoVec(place.lat, place.lng, nearDist);
+    nearCam.y += 0.35;
+    var farCam = geoVec(place.lat, place.lng, frameDist);
+    farCam.y += 0.35;
     controls.target.set(0, 0.05, 0);
-    controls.minDistance = before / zoomScale;
-    controls.maxDistance = before / zoomScale * 2.25;
+    controls.minDistance = nearCam.distanceTo(controls.target);
+    controls.maxDistance = farCam.distanceTo(controls.target);
     controls.update();
     var after = camera.position.distanceTo(controls.target);
-    if (before > 0) zoomScale = Math.min(2.25, Math.max(1, zoomScale * (after / before)));
+    if (before > 0) zoomScale = Math.min(1, Math.max(nearScale, zoomScale * (after / before)));
     camera.updateMatrixWorld(true);
-    var camDist = frameDist;
-    var sunOrbit = Math.max(2.15, camDist * 0.58);
+    placedDist = camera.position.distanceTo(controls.target);
+    var camDist = camera.position.length();
+    var sunOrbit = Math.max(1.75, Math.min(frameDist * 0.58, camDist * 0.72));
     var lagged = s.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), orbit * 0.6);
     lagged.y = 0;
     if (lagged.lengthSq() < 1e-8) lagged.set(1, 0, 0);
