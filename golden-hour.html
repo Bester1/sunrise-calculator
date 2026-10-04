@@ -22,69 +22,113 @@
 <style>
   :root { color-scheme: dark; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
   body {
     font-family: Inter, system-ui, sans-serif;
     color: #f4f1ea;
-    min-height: 100vh;
-    background:
-      radial-gradient(circle at 50% 18%, #3a2414 0%, #1a120c 42%, #070b16 100%);
+    overflow: hidden;
+    background: #070b16;
   }
+  #sky {
+    position: fixed; inset: 0;
+    background: radial-gradient(circle at 50% 42%, #12182a 0%, #070910 62%, #05060c 100%);
+  }
+  #globe {
+    position: fixed; left: 0; top: 0;
+    width: 100vw; height: 100vh;
+    z-index: 1;
+    display: none;
+    touch-action: none;
+  }
+  .stars {
+    position: fixed; inset: 0; pointer-events: none;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.8) 50%, transparent 51%),
+      radial-gradient(1px 1px at 28% 42%, rgba(255,255,255,.55) 50%, transparent 51%),
+      radial-gradient(1.4px 1.4px at 72% 22%, rgba(255,255,255,.7) 50%, transparent 51%),
+      radial-gradient(1px 1px at 84% 58%, rgba(255,255,255,.45) 50%, transparent 51%),
+      radial-gradient(1px 1px at 46% 12%, rgba(255,255,255,.6) 50%, transparent 51%),
+      radial-gradient(1.2px 1.2px at 61% 70%, rgba(255,255,255,.4) 50%, transparent 51%),
+      radial-gradient(1px 1px at 8% 76%, rgba(255,255,255,.5) 50%, transparent 51%);
+    opacity: 0;
+    z-index: 1;
+  }
+  body.globe-on .stars { opacity: .55; z-index: 0; }
   .wrap {
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 28px 16px 40px;
-  }
-  .card {
-    width: min(420px, 100%);
-    background: rgba(10, 14, 26, .82);
-    border: 1px solid rgba(255,255,255,.14);
-    border-radius: 22px;
-    padding: 18px 16px 16px;
-    backdrop-filter: blur(16px);
+    position: fixed; left: 18px; top: 18px; z-index: 6;
+    width: min(360px, calc(100vw - 36px));
+    max-height: calc(100vh - 24px);
+    overflow: auto;
+    pointer-events: auto;
   }
   .eyebrow {
     letter-spacing: .18em; text-transform: uppercase;
-    font-size: 11px; color: rgba(255,255,255,.72);
+    font-size: 11px; color: #ffd7a8; font-weight: 500;
   }
   h1 {
     font-family: "Space Grotesk", sans-serif;
-    font-size: 28px; font-weight: 600; letter-spacing: -0.03em;
-    margin: 4px 0 2px;
+    font-weight: 600; font-size: 22px;
+    margin: 2px 0 2px; letter-spacing: -0.03em; line-height: 1.1;
   }
-  .city-name { font-size: 14px; color: rgba(255,255,255,.82); margin: 0 0 10px; }
-  label {
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-    font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.7);
-    margin-bottom: 12px;
+  .city-name { font-size: 14px; color: rgba(255,255,255,.82); margin: 0 0 2px; }
+  .card {
+    width: 100%;
+    background: rgba(10, 14, 26, .82);
+    border: 1px solid rgba(255, 196, 120, .28);
+    border-radius: 20px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.28);
+    padding: 14px 14px 12px;
+    text-align: left;
+    position: relative;
+    pointer-events: auto;
   }
-  select {
-    width: 62%;
-    background: #162033; color: #fff;
-    border: 1px solid rgba(255,255,255,.16); border-radius: 10px;
-    padding: 6px 8px; font: 13px Inter, system-ui, sans-serif;
+  .card::before {
+    content: "";
+    position: absolute; inset: 0; border-radius: inherit; z-index: -1;
+    backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    pointer-events: none;
   }
-  .times { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .times { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
   .pill {
     background: rgba(255,255,255,.06);
     border: 1px solid rgba(255,255,255,.1);
     border-radius: 14px; padding: 8px 10px;
   }
+  .pill.gold {
+    background: rgba(255, 176, 90, .14);
+    border-color: rgba(255, 210, 150, .35);
+  }
   .pill span {
-    display: block; font-size: 11px; letter-spacing: .08em;
+    display: block; font-size: 11px; letter-spacing: .04em;
     text-transform: uppercase; color: rgba(255,255,255,.7);
   }
+  .pill.gold span { color: #ffd7a8; }
   .pill b {
     display: block; margin-top: 2px;
     font-family: "Space Grotesk", sans-serif;
-    font-size: 22px; font-weight: 600;
+    font-size: 20px; font-weight: 600;
   }
-  .window { margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.82); }
-  .note { margin-top: 12px; font-size: 12px; line-height: 1.45; color: rgba(255,255,255,.62); }
-  .back { margin-top: 12px; font-size: 13px; }
-  .back a, .note a { color: #ffd7a8; }
-
+  .window { margin-top: 10px; font-size: 13px; color: rgba(255,255,255,.86); }
+  .note { margin-top: 8px; font-size: 12px; line-height: 1.45; color: rgba(255,255,255,.62); }
+  .back { margin-top: 10px; font-size: 13px; }
+  .back a { color: #ffd7a8; }
+  .controls { display: grid; gap: 8px; margin: 8px 0 2px; }
+  .controls.city-bar { margin: 0 0 2px; }
+  .controls.city-bar select { width: auto; flex: 1; }
+  .controls label {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.7);
+  }
+  .controls, .controls select, .controls input[type="range"] {
+    pointer-events: auto; position: relative; z-index: 2;
+  }
+  .controls select, .controls input[type="range"] { width: 62%; touch-action: auto; }
+  .controls select {
+    background: #162033; color: #ffffff;
+    border: 1px solid rgba(255,255,255,.16); border-radius: 10px;
+    padding: 6px 8px; font: 13px Inter, system-ui, sans-serif;
+    letter-spacing: 0; text-transform: none;
+  }
   details.fold > summary {
     list-style: none; cursor: pointer;
     display: flex; align-items: center; justify-content: space-between; gap: 8px;
@@ -101,7 +145,6 @@
   @media (min-width: 641px) {
     details.fold > summary { display: none; }
   }
-
   .card-min {
     display: none;
     border: 1px solid rgba(255,215,168,.45);
@@ -112,22 +155,40 @@
   }
   .card-head, .card-titles { display: contents; }
   @media (max-width: 640px) {
-    .wrap { padding: 0; align-items: stretch; }
-    .card {
-      width: 100%; min-height: 50vh; margin-top: auto;
-      border-radius: 18px 18px 0 0;
+    #globe { height: 50vh; }
+    .wrap.is-min ~ #globe, body.scene-full #globe { height: 100vh; }
+    .wrap {
+      left: 0; right: 0; top: 50vh; bottom: 0;
+      width: auto; max-height: none; padding: 0;
     }
-    .card.is-min { min-height: 0; }
-    .card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
-    .card-titles { display: block; }
+    .wrap.is-min { top: auto; }
+    .card {
+      height: 100%; overflow: auto;
+      border-radius: 18px 18px 0 0;
+      padding: 10px 12px 14px;
+    }
+    .wrap.is-min .card { height: auto; overflow: hidden; }
+    .card-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      column-gap: 8px;
+      row-gap: 2px;
+    }
+    .card-head > .city-bar { grid-column: 1 / -1; margin: 0; }
+    .card-titles { display: block; min-width: 0; }
     .card-min { display: inline-flex; flex: none; margin-top: 4px; }
-    .card.is-min > :not(.card-head) { display: none; }
-    h1 { font-size: 24px; }
-    .pill b { font-size: 18px; }
+    .wrap.is-min .card > :not(.card-head) { display: none; }
+    .wrap.is-min .city-bar { display: none; }
+    h1 { font-size: 20px; }
+    .pill b { font-size: 16px; }
   }
 </style>
 </head>
 <body>
+<div id="sky"></div>
+<canvas id="globe"></canvas>
+<div class="stars" id="stars"></div>
 <main class="wrap">
   <section class="card">
     <div class="card-head">
@@ -137,37 +198,57 @@
         <p class="city-name" id="city-name">Johannesburg</p>
       </div>
       <button class="card-min" type="button" aria-expanded="true">Hide</button>
+      <div class="controls city-bar">
+        <label>City
+          <select id="city-picker" aria-label="City"></select>
+        </label>
+      </div>
     </div>
-    <label>City
-      <select id="city-picker" aria-label="City"></select>
-    </label>
     <details class="fold" open>
       <summary>Today</summary>
       <div class="times">
-        <div class="pill"><span>Morning starts</span><b id="dawn">--:--</b></div>
+        <div class="pill gold"><span>Morning starts</span><b id="dawn">--:--</b></div>
         <div class="pill"><span>Sunrise</span><b id="rise">--:--</b></div>
         <div class="pill"><span>Sunset</span><b id="set">--:--</b></div>
-        <div class="pill"><span>Evening ends</span><b id="dusk">--:--</b></div>
+        <div class="pill gold"><span>Evening ends</span><b id="dusk">--:--</b></div>
       </div>
       <p class="window" id="windows"></p>
-      <p class="note" id="note">Morning runs from civil dawn, when the sun is 6° below the horizon, up to sunrise. Evening runs from sunset down to civil dusk. No need for a globe here.</p>
+      <div class="controls">
+        <label>Spin
+          <input id="spin" type="range" min="0" max="100" value="9" aria-label="Globe rotation speed">
+        </label>
+        <label>Zoom
+          <input id="zoom" type="range" min="0" max="100" value="0" aria-label="Globe zoom">
+        </label>
+      </div>
+      <p class="note" id="note">Morning runs from civil dawn, when the sun is 6° below the horizon, up to sunrise. Evening runs from sunset down to civil dusk.</p>
     </details>
-    <p class="back"><a id="back" href="index.html">Back to the globe</a></p>
+    <p class="back"><a id="back" href="sunrise-johannesburg.html">Sunrise in Johannesburg</a></p>
   </section>
 </main>
 <script>
 (function () {
   var btn = document.querySelector(".card-min");
-  var card = document.querySelector(".card");
-  if (!btn || !card) return;
+  var wrap = document.querySelector(".wrap");
+  if (!btn || !wrap) return;
   btn.addEventListener("click", function () {
-    var slim = card.classList.toggle("is-min");
+    var slim = wrap.classList.toggle("is-min");
+    document.body.classList.toggle("scene-full", slim);
     btn.setAttribute("aria-expanded", slim ? "false" : "true");
     btn.textContent = slim ? "Show" : "Hide";
+    window.dispatchEvent(new Event("resize"));
   });
 })();
 </script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script src="orbit-controls.js"></script>
 <script>
+
+const DAY_URL = "https://cdn.jsdelivr.net/npm/three-globe@2.31.1/example/img/earth-blue-marble.jpg";
+const NIGHT_URL = "https://cdn.jsdelivr.net/npm/three-globe@2.31.1/example/img/earth-night.jpg";
+const RAD = Math.PI / 180;
+const DEG = 180 / Math.PI;
+
 const CITY_PICK = [
   ["Accra", "accra", 5.55602, -0.1969, "Africa/Accra"],
   ["Addis Ababa", "addis-ababa", 9.02497, 38.74689, "Africa/Addis_Ababa"],
@@ -271,9 +352,11 @@ const CITY_PICK = [
   ["Windhoek", "windhoek", -22.55941, 17.08323, "Africa/Windhoek"],
 ];
 
-const RAD = Math.PI / 180;
-const DEG = 180 / Math.PI;
 let place = { name: "Johannesburg", lat: -26.2041, lng: 28.0473, tz: "Africa/Johannesburg", slug: "johannesburg" };
+let spinSpeed = 0.0007;
+let zoomControl = 0;
+let zoomHeld = false;
+let globe = null;
 
 function pad(n) { return String(n).padStart(2, "0"); }
 function dayOfYear(d) {
@@ -354,6 +437,594 @@ function selectCity(slug, push) {
   }
   show();
 }
+
+function julianN(date) {
+  return date.getTime() / 86400000 + 2440587.5 - 2451545.0;
+}
+
+function solarPoint(date) {
+  const n = julianN(date);
+  let L = (280.460 + 0.9856474 * n) % 360;
+  if (L < 0) L += 360;
+  let g = (357.528 + 0.9856003 * n) % 360;
+  if (g < 0) g += 360;
+  const lambda = L + 1.915 * Math.sin(g * RAD) + 0.020 * Math.sin(2 * g * RAD);
+  const eps = 23.439 - 0.0000004 * n;
+  const lam = lambda * RAD;
+  const ob = eps * RAD;
+  const ra = Math.atan2(Math.cos(ob) * Math.sin(lam), Math.cos(lam));
+  const dec = Math.asin(Math.sin(ob) * Math.sin(lam));
+  let gmst = (280.46061837 + 360.98564736629 * n) % 360;
+  if (gmst < 0) gmst += 360;
+  let subLon = (ra * DEG - gmst) % 360;
+  if (subLon > 180) subLon -= 360;
+  if (subLon < -180) subLon += 360;
+  return { dec: dec * DEG, subLon: subLon, lambda: ((lambda % 360) + 360) % 360, gmst: gmst };
+}
+
+function moonPoint(date, sun) {
+  const syn = 29.530588853;
+  const known = Date.UTC(2000, 0, 6, 18, 14, 0);
+  const days = (date.getTime() - known) / 86400000;
+  const age = ((days % syn) + syn) % syn;
+  const elong = (age / syn) * 360;
+  const lambda = sun.lambda + elong;
+  const beta = 5.14 * Math.sin(elong * RAD);
+  const eps = (23.439) * RAD;
+  const lam = lambda * RAD;
+  const bet = beta * RAD;
+  const ra = Math.atan2(Math.sin(lam) * Math.cos(eps) - Math.tan(bet) * Math.sin(eps), Math.cos(lam));
+  const dec = Math.asin(Math.sin(bet) * Math.cos(eps) + Math.cos(bet) * Math.sin(eps) * Math.sin(lam));
+  let lon = (ra * DEG - sun.gmst) % 360;
+  if (lon > 180) lon -= 360;
+  if (lon < -180) lon += 360;
+  return { lat: dec * DEG, lon: lon, age: age };
+}
+
+function geoVec(lat, lon, radius) {
+  const phi = (90 - lat) * RAD;
+  const theta = (lon + 180) * RAD;
+  const sinPhi = Math.sin(phi);
+  return new THREE.Vector3(
+    -radius * Math.cos(theta) * sinPhi,
+    radius * Math.cos(phi),
+    radius * Math.sin(theta) * sinPhi
+  );
+}
+function hasWebGL() {
+  try {
+    const c = document.createElement("canvas");
+    return !!(window.WebGLRenderingContext && (c.getContext("webgl") || c.getContext("experimental-webgl")));
+  } catch (e) {
+    return false;
+  }
+}
+function initGlobe() {
+  const canvas = document.getElementById("globe");
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  if (THREE.LinearSRGBColorSpace) renderer.outputColorSpace = THREE.LinearSRGBColorSpace;
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
+  scene.add(new THREE.AmbientLight(0x8aa0c8, 0.08));
+
+  const sunDir = new THREE.Vector3(1, 0, 0);
+  const sunGlow = { value: 1 };
+  const earthMat = new THREE.ShaderMaterial({
+    uniforms: {
+      dayMap: { value: null },
+      nightMap: { value: null },
+      sunDir: { value: sunDir }, sunFade: sunGlow,
+      hasDay: { value: 0 },
+      hasNight: { value: 0 }
+    },
+    vertexShader: [
+      "varying vec2 vUv;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vUv = uv;",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform sampler2D dayMap;",
+      "uniform sampler2D nightMap;",
+      "uniform vec3 sunDir;",
+      "uniform float sunFade;",
+      "uniform float hasDay;",
+      "uniform float hasNight;",
+      "varying vec2 vUv;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vec3 n = normalize(vNormal);",
+      "  vec3 s = normalize(sunDir);",
+      "  float ndl = dot(n, s);",
+      "  float dayAmt = smoothstep(-0.18, 0.32, ndl);",
+      "  vec3 dayTex = texture2D(dayMap, vUv).rgb;",
+      "  vec3 nightTex = texture2D(nightMap, vUv).rgb;",
+      "  float dayLuma = dot(dayTex, vec3(0.299, 0.587, 0.114));",
+      "  vec3 dayFallback = vec3(0.42, 0.70, 0.95);",
+      "  vec3 dayCol = mix(dayFallback, dayTex, hasDay * step(0.05, dayLuma));",
+      "  vec3 nightCol = mix(vec3(0.015, 0.02, 0.045), nightTex, hasNight);",
+      "  float water = smoothstep(0.04, 0.16, dayTex.b - dayTex.r);",
+      "  water *= 1.0 - smoothstep(0.06, 0.22, dayTex.g - dayTex.b);",
+      "  water *= 1.0 - smoothstep(0.72, 0.92, dayLuma);",
+      "  vec3 col = mix(nightCol, dayCol, dayAmt);",
+      "  col += dayCol * clamp(ndl, 0.0, 1.0) * 0.18 * (1.0 - water);",
+      "  float shade = smoothstep(-0.65, 0.85, ndl);",
+      "  vec3 ocean = mix(vec3(0.012, 0.04, 0.055), vec3(0.05, 0.12, 0.125), shade);",
+      "  col = mix(col, ocean, water);",
+      "  float term = exp(-ndl * ndl * 28.0);",
+      "  col += vec3(1.0, 0.48, 0.18) * term * 0.22 * (1.0 - water);",
+      "  col = mix(nightCol, col, sunFade);",
+      "  gl_FragColor = vec4(col, 1.0);",
+      "}"
+    ].join("\n")
+  });
+
+  const dayPlaceholder = new THREE.DataTexture(new Uint8Array([90, 160, 230, 255]), 1, 1);
+  dayPlaceholder.needsUpdate = true;
+  earthMat.uniforms.dayMap.value = dayPlaceholder;
+  const earth = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 96), earthMat);
+  scene.add(earth);
+
+  const atmosMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    transparent: true,
+    depthWrite: false,
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow, fullAmt: { value: 0.5 } },
+    vertexShader: [
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vNormal = normalize(normalMatrix * normal);",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "varying vec3 vNormal;",
+      "uniform vec3 sunDir;",
+      "uniform float sunFade;",
+      "void main() {",
+      "  float rim = pow(0.62 - dot(vNormal, vec3(0.0, 0.0, 1.0)), 2.2);",
+      "  float lit = smoothstep(-0.2, 0.6, dot(normalize(vNormal), normalize(sunDir)));",
+      "  lit *= sunFade;",
+      "  vec3 glow = mix(vec3(0.25, 0.35, 0.7), vec3(0.55, 0.75, 1.0), lit);",
+      "  gl_FragColor = vec4(glow, clamp(rim, 0.0, 1.0) * 0.9);",
+      "}"
+    ].join("\n")
+  });
+  scene.add(new THREE.Mesh(new THREE.SphereGeometry(1.08, 64, 64), atmosMat));
+
+  const moonMat = new THREE.ShaderMaterial({
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow, fullAmt: { value: 0.5 } },
+    vertexShader: [
+      "varying vec3 vNormal;",
+      "varying vec3 vPos;",
+      "void main() {",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  vPos = position;",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir;",
+      "uniform float sunFade;",
+      "uniform float fullAmt;",
+      "varying vec3 vNormal;",
+      "varying vec3 vPos;",
+      "float hash(vec3 p) { return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453); }",
+      "float noise(vec3 p) {",
+      "  vec3 i = floor(p); vec3 f = fract(p); f = f * f * (3.0 - 2.0 * f);",
+      "  return mix(mix(mix(hash(i), hash(i+vec3(1.0,0.0,0.0)), f.x),",
+      "                 mix(hash(i+vec3(0.0,1.0,0.0)), hash(i+vec3(1.0,1.0,0.0)), f.x), f.y),",
+      "             mix(mix(hash(i+vec3(0.0,0.0,1.0)), hash(i+vec3(1.0,0.0,1.0)), f.x),",
+      "                 mix(hash(i+vec3(0.0,1.0,1.0)), hash(i+vec3(1.0,1.0,1.0)), f.x), f.y), f.z);",
+      "}",
+      "void main() {",
+      "  vec3 N = normalize(vNormal);",
+      "  vec3 L = normalize(sunDir);",
+      "  float ndl = dot(N, L);",
+      "  float lit = smoothstep(-0.06, 0.22, ndl);",
+      "  float maria = smoothstep(0.38, 0.72, noise(vPos * 3.2));",
+      "  float pits = smoothstep(0.62, 0.84, noise(vPos * 14.0));",
+      "  float grain = noise(vPos * 28.0);",
+      "  vec3 highland = vec3(0.80, 0.78, 0.72);",
+      "  vec3 mare = vec3(0.40, 0.42, 0.46);",
+      "  vec3 albedo = mix(highland, mare, maria);",
+      "  albedo *= mix(0.92, 1.05, grain);",
+      "  albedo = mix(albedo, albedo * vec3(0.55, 0.54, 0.50), pits);",
+      "  float sunAmt = clamp(ndl, 0.0, 1.0);",
+      "  lit *= sunFade;",
+      "  sunAmt *= sunFade;",
+      "  vec3 col = albedo * vec3(1.0, 0.96, 0.88) * (0.05 + lit * (0.35 + 0.75 * sunAmt));",
+      "  col += vec3(0.055, 0.065, 0.095) * (1.0 - lit);",
+      "  col += vec3(1.0, 0.93, 0.75) * pow(sunAmt, 6.0) * 0.18;",
+      "  col += albedo * vec3(1.0, 0.97, 0.9) * lit * fullAmt * 0.55;",
+      "  gl_FragColor = vec4(col, 1.0);",
+      "}"
+    ].join("\n")
+  });
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.27, 64, 64), moonMat);
+  scene.add(moon);
+
+  const jupiterMat = new THREE.ShaderMaterial({
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow },
+    vertexShader: [
+      "varying vec3 vNormal;",
+      "varying vec3 vPos;",
+      "void main() {",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  vPos = position;",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir;",
+      "uniform float sunFade;",
+      "varying vec3 vNormal;",
+      "varying vec3 vPos;",
+      "void main() {",
+      "  vec3 N = normalize(vNormal);",
+      "  float lit = smoothstep(-0.08, 0.35, dot(N, normalize(sunDir)));",
+      "  lit *= sunFade;",
+      "  float lat = vPos.y / 0.20;",
+      "  float bands = sin(lat * 18.0);",
+      "  float bands2 = sin(lat * 9.0 + 0.7);",
+      "  vec3 orange = vec3(0.80, 0.42, 0.12);",
+      "  vec3 cream = vec3(0.95, 0.84, 0.58);",
+      "  vec3 whiteb = vec3(0.98, 0.96, 0.90);",
+      "  vec3 albedo = mix(orange, cream, bands * 0.5 + 0.5);",
+      "  albedo = mix(albedo, whiteb, smoothstep(0.2, 0.85, bands2) * 0.4);",
+      "  vec3 p = normalize(vPos);",
+      "  float lon = atan(p.z, p.x);",
+      "  float dlon = atan(sin(lon - 1.1), cos(lon - 1.1));",
+      "  float dlat = p.y - (-0.32);",
+      "  float spot = smoothstep(0.34, 0.08, length(vec2(dlon * 1.25, dlat * 2.4)));",
+      "  albedo = mix(albedo, vec3(0.62, 0.07, 0.05), spot);",
+      "  vec3 col = albedo * (0.07 + lit * 0.95);",
+      "  gl_FragColor = vec4(col, 1.0);",
+      "}"
+    ].join("\n")
+  });
+  const jupiter = new THREE.Mesh(new THREE.SphereGeometry(0.16, 48, 48), jupiterMat);
+  scene.add(jupiter);
+
+  const saturnMat = new THREE.ShaderMaterial({
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow },
+    vertexShader: [
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir;",
+      "uniform float sunFade;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  float lit = smoothstep(-0.08, 0.4, dot(normalize(vNormal), normalize(sunDir)));",
+      "  lit *= sunFade;",
+      "  vec3 gold = vec3(0.91, 0.78, 0.46);",
+      "  gl_FragColor = vec4(gold * (0.10 + lit * 0.95), 1.0);",
+      "}"
+    ].join("\n")
+  });
+  const saturn = new THREE.Group();
+  saturn.add(new THREE.Mesh(new THREE.SphereGeometry(0.13, 48, 48), saturnMat));
+  const ringMat = new THREE.ShaderMaterial({
+    side: THREE.DoubleSide,
+    transparent: true,
+    depthWrite: false,
+    uniforms: { sunDir: { value: sunDir }, sunFade: sunGlow },
+    vertexShader: [
+      "varying vec3 vPos;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  vPos = position;",
+      "  vNormal = normalize(mat3(modelMatrix) * normal);",
+      "  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);",
+      "}"
+    ].join("\n"),
+    fragmentShader: [
+      "uniform vec3 sunDir;",
+      "uniform float sunFade;",
+      "varying vec3 vPos;",
+      "varying vec3 vNormal;",
+      "void main() {",
+      "  float r = length(vPos.xy);",
+      "  float cassini = smoothstep(0.012, 0.002, abs(r - 0.285));",
+      "  float grain = 0.45 + 0.55 * sin((r - 0.22) * 95.0);",
+      "  vec3 icy = vec3(0.90, 0.93, 0.97);",
+      "  vec3 gold = vec3(0.86, 0.74, 0.45);",
+      "  vec3 col = mix(gold, icy, grain);",
+      "  col = mix(col, vec3(0.16, 0.12, 0.08), cassini);",
+      "  float lit = smoothstep(-0.2, 0.45, dot(normalize(vNormal), normalize(sunDir)));",
+      "  lit *= sunFade;",
+      "  float alpha = mix(0.88, 0.10, cassini);",
+      "  gl_FragColor = vec4(col * (0.28 + lit * 0.75), alpha);",
+      "}"
+    ].join("\n")
+  });
+  const rings = new THREE.Mesh(new THREE.RingGeometry(0.22, 0.34, 80), ringMat);
+  rings.rotation.x = 1.15;
+  saturn.add(rings);
+  scene.add(saturn);
+
+  const sunBody = new THREE.Mesh(
+    new THREE.SphereGeometry(0.22, 32, 32),
+    new THREE.MeshBasicMaterial({ color: 0xffb000, transparent: true, opacity: 1, depthWrite: false })
+  );
+  scene.add(sunBody);
+
+  const marker = new THREE.Mesh(
+    new THREE.SphereGeometry(0.025, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xffd27a })
+  );
+  scene.add(marker);
+  const markerGlow = new THREE.Mesh(
+    new THREE.SphereGeometry(0.045, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xffb45a, transparent: true, opacity: 0.35 })
+  );
+  scene.add(markerGlow);
+
+  const starGeo = new THREE.BufferGeometry();
+  const starPos = new Float32Array(900 * 3);
+  for (let i = 0; i < 900; i++) {
+    const r = 28 + Math.random() * 18;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    starPos[i * 3] = r * Math.sin(ph) * Math.cos(th);
+    starPos[i * 3 + 1] = r * Math.cos(ph);
+    starPos[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+  }
+  starGeo.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
+  scene.add(new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.045, transparent: true, opacity: 0.85 })));
+
+  const loader = new THREE.TextureLoader();
+  loader.setCrossOrigin("anonymous");
+  loader.load(DAY_URL, function (tex) {
+    earthMat.uniforms.dayMap.value = tex;
+    earthMat.uniforms.hasDay.value = 1;
+  });
+  loader.load(NIGHT_URL, function (tex) {
+    earthMat.uniforms.nightMap.value = tex;
+    earthMat.uniforms.hasNight.value = 1;
+  });
+
+  let orbit = 0.35;
+  let dragging = false;
+  let dragX = 0;
+  let dragEdge = 0;
+  function viewSize() {
+    var narrow = window.matchMedia("(max-width: 640px)").matches;
+    var wrap = document.querySelector(".wrap");
+    var slim = wrap && wrap.classList.contains("is-min");
+    var h = window.innerHeight;
+    if (narrow && !slim) h = Math.max(180, Math.round(window.innerHeight * 0.5));
+    return { w: window.innerWidth, h: h };
+  }
+  function fitDistance() {
+    var size = viewSize();
+    var w = size.w, h = size.h;
+    var aspect = Math.max(0.2, w / Math.max(1, h));
+    var vHalf = camera.fov * Math.PI / 360;
+    var hHalf = Math.atan(Math.tan(vHalf) * aspect);
+    var extent = 2.35;
+    var distV = extent / Math.tan(vHalf);
+    var distH = extent / Math.tan(hHalf);
+    return Math.max(4.4, distV, distH) * 1.08;
+  }
+  function resize() {
+    var size = viewSize();
+    const w = size.w, h = size.h;
+    renderer.setSize(w, h, true);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener("resize", resize);
+  var controls = new THREE.OrbitControls(camera, canvas);
+  controls.enableRotate = false;
+  controls.enablePan = false;
+  controls.enableZoom = false;
+  controls.enableDamping = false;
+  controls.zoomSpeed = 0.7;
+  controls.target.set(0, 0.05, 0);
+  controls.touches.ONE = THREE.TOUCH.ROTATE;
+  controls.touches.TWO = THREE.TOUCH.DOLLY_PAN;
+  var _ndcCenter = new THREE.Vector3();
+  function ringReach(r) {
+    var cam = geoVec(place.lat, place.lng, r);
+    cam.y += 0.35;
+    camera.position.copy(cam);
+    camera.lookAt(0, 0.05, 0);
+    camera.updateMatrixWorld(true);
+    _ndcCenter.set(0, 0, 0).project(camera);
+    var dist = cam.length();
+    var alpha = Math.asin(Math.min(0.999, 1.08 / Math.max(dist, 1.09)));
+    var vHalf = camera.fov * Math.PI / 360;
+    var yN = Math.tan(alpha) / Math.tan(vHalf);
+    var xN = yN / Math.max(0.2, camera.aspect);
+    return Math.max(Math.abs(_ndcCenter.x) + xN, Math.abs(_ndcCenter.y) + yN);
+  }
+  function fillDistance() {
+    var lo = 1.35, hi = fitDistance();
+    for (var i = 0; i < 18; i++) {
+      var mid = (lo + hi) * 0.5;
+      if (ringReach(mid) > 0.98) lo = mid;
+      else hi = mid;
+    }
+    return hi;
+  }
+
+  function frame(now) {
+    const sun = solarPoint(now);
+    const s = geoVec(sun.dec, sun.subLon, 1);
+    sunDir.copy(s);
+    var mAng = now.getTime()/1000 * 0.30;
+    moon.position.set(Math.cos(mAng)*2.00, Math.sin(mAng)*0.2, Math.sin(mAng)*2.00);
+    moon.lookAt(0,0,0);
+    var jAng = now.getTime()/1000 * 0.055;
+    jupiter.position.set(Math.cos(jAng)*2.20, 0.50, Math.sin(jAng)*2.20);
+    jupiter.rotation.y = now.getTime()/1000 * 0.55;
+    var sAng = now.getTime()/1000 * 0.025 + 2.1;
+    saturn.position.set(Math.cos(sAng)*2.28, -0.55, Math.sin(sAng)*2.28);
+    const pin = geoVec(place.lat, place.lng, 1.02);
+    marker.position.copy(pin);
+    markerGlow.position.copy(pin);
+    if (dragging && dragEdge) orbit += dragEdge * 0.018;
+    else if (!dragging) orbit += spinSpeed;
+    const TAU = Math.PI * 2;
+    orbit = orbit % TAU;
+    if (orbit < 0) orbit += TAU;
+    var frameDist = fitDistance();
+    var nearDist = Math.min(frameDist, fillDistance());
+    if (zoomControl < 0) zoomControl = 0;
+    if (zoomControl > 1) zoomControl = 1;
+    var r = frameDist + (nearDist - frameDist) * zoomControl;
+    var zoomSlider = document.getElementById("zoom");
+    if (zoomSlider && !zoomHeld) zoomSlider.value = String(Math.round(zoomControl * 100));
+    const base = geoVec(place.lat, place.lng, r);
+    const q = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), orbit);
+    camera.position.copy(base.applyQuaternion(q));
+    camera.position.y += 0.35;
+    camera.lookAt(0, 0.05, 0);
+    var nearCam = geoVec(place.lat, place.lng, nearDist);
+    nearCam.y += 0.35;
+    var farCam = geoVec(place.lat, place.lng, frameDist);
+    farCam.y += 0.35;
+    controls.target.set(0, 0.05, 0);
+    controls.minDistance = nearCam.distanceTo(controls.target);
+    controls.maxDistance = farCam.distanceTo(controls.target);
+    controls.update();
+    camera.updateMatrixWorld(true);
+    var camDist = camera.position.length();
+    var screenRight = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 0);
+    var screenUp = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 1);
+    var screenForward = new THREE.Vector3().setFromMatrixColumn(camera.matrixWorld, 2).multiplyScalar(-1);
+    function levelDir(v) {
+      var n = v.clone().addScaledVector(screenUp, -v.dot(screenUp));
+      if (n.lengthSq() < 1e-8) n.copy(screenRight);
+      return n.normalize();
+    }
+    var side = levelDir(screenRight);
+    var ahead = levelDir(camera.position.clone().negate());
+    var sunAngle = orbit;
+    var sunRadius = Math.max(camDist + 1.4, camDist * 1.65);
+    var sunPos = new THREE.Vector3();
+    sunPos.addScaledVector(side, -Math.cos(sunAngle));
+    sunPos.addScaledVector(ahead, Math.sin(sunAngle));
+    sunPos.multiplyScalar(sunRadius);
+    sunBody.position.copy(sunPos);
+    sunDir.copy(sunPos).normalize();
+    var moonLen = moon.position.length() || 1.0;
+    var phase = (moon.position.x * sunDir.x + moon.position.y * sunDir.y + moon.position.z * sunDir.z) / moonLen;
+    moonMat.uniforms.fullAmt.value = (1.0 - phase) * 0.5;
+    var toSun = sunPos.clone().sub(camera.position);
+    var sunDist = toSun.length() || 1;
+    var facing = toSun.dot(screenForward) / sunDist;
+    var ray = toSun.clone().multiplyScalar(1 / sunDist);
+    var tCenter = -camera.position.dot(ray);
+    var miss = camera.position.clone().addScaledVector(ray, Math.max(0, tCenter)).length();
+    var seen = Math.max(0, Math.min(1, (miss - 0.92) / 0.62));
+    seen = seen * seen * (3 - 2 * seen);
+    if (facing < 0.25) seen *= Math.max(0, facing / 0.25);
+    if (sunGlow.shown == null) sunGlow.shown = seen;
+    sunGlow.shown += (seen - sunGlow.shown) * 0.04;
+    sunGlow.value = 1;
+    sunBody.scale.setScalar(Math.max(0.45, sunDist / 9));
+    sunBody.material.opacity = sunGlow.shown;
+    sunBody.material.depthTest = true;
+    sunBody.visible = facing > 0 && sunGlow.shown > 0.02;
+    renderer.render(scene, camera);
+  }
+
+  canvas.style.touchAction = "none";
+  var activePointers = {};
+  var pointerCount = 0;
+  canvas.addEventListener("pointerdown", function (e) {
+    if (e.button !== undefined && e.button !== 0) return;
+    if (!activePointers[e.pointerId]) { activePointers[e.pointerId] = 1; pointerCount++; }
+    if (pointerCount > 1) { dragging = false; return; }
+    dragging = true;
+    dragX = e.clientX;
+    if (e.pointerType !== "touch" && canvas.setPointerCapture) canvas.setPointerCapture(e.pointerId);
+  });
+  canvas.addEventListener("pointermove", function (e) {
+    if (!dragging || pointerCount > 1) return;
+    var dx = e.clientX - dragX;
+    if (e.pointerType !== "touch" && e.movementX) dx = e.movementX;
+    orbit += dx * 0.01;
+    dragX = e.clientX;
+    var margin = 28;
+    if (e.clientX <= margin) dragEdge = -1;
+    else if (e.clientX >= window.innerWidth - margin) dragEdge = 1;
+    else dragEdge = 0;
+  });
+  function endDrag(e) {
+    if (e && e.pointerId != null && activePointers[e.pointerId]) {
+      delete activePointers[e.pointerId];
+      pointerCount--;
+    }
+    dragging = false;
+    dragEdge = 0;
+  }
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
+  function touchSpan(touches) {
+    if (!touches || touches.length < 2) return 0;
+    var dx = touches[0].clientX - touches[1].clientX;
+    var dy = touches[0].clientY - touches[1].clientY;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+  var pinchDist = 0;
+  canvas.addEventListener("touchstart", function (e) {
+    if (e.touches.length >= 2) {
+      dragging = false;
+      dragEdge = 0;
+      pinchDist = touchSpan(e.touches);
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener("touchmove", function (e) {
+    if (e.touches.length >= 2) {
+      var span = touchSpan(e.touches);
+      if (pinchDist > 8 && span > 8) {
+        zoomControl += (span / pinchDist - 1) * 1.4;
+        if (zoomControl < 0) zoomControl = 0;
+        if (zoomControl > 1) zoomControl = 1;
+        pinchDist = span;
+      }
+      dragging = false;
+      dragEdge = 0;
+      e.preventDefault();
+    }
+  }, { passive: false });
+  canvas.addEventListener("touchend", function () { pinchDist = 0; });
+  canvas.addEventListener("touchcancel", function () { pinchDist = 0; });
+  canvas.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    zoomControl -= e.deltaY * 0.0011;
+    if (zoomControl < 0) zoomControl = 0;
+    if (zoomControl > 1) zoomControl = 1;
+  }, { passive: false });
+
+  canvas.style.display = "block";
+  document.body.classList.add("globe-on");
+  document.getElementById("sky").style.background = "radial-gradient(circle at 50% 42%, #12182a 0%, #070910 62%, #05060c 100%)";
+  globe = { frame: frame };
+  (function loop() {
+    frame(new Date());
+    requestAnimationFrame(loop);
+  })();
+}
+
+if (window.THREE && hasWebGL()) {
+  try { initGlobe(); }
+  catch (err) { globe = null; }
+}
 const sel = document.getElementById("city-picker");
 CITY_PICK.forEach(function (row) {
   const opt = document.createElement("option");
@@ -361,7 +1032,26 @@ CITY_PICK.forEach(function (row) {
   opt.textContent = row[0];
   sel.appendChild(opt);
 });
+sel.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
 sel.addEventListener("change", function () { selectCity(sel.value, true); });
+const spin = document.getElementById("spin");
+if (spin) {
+  spin.addEventListener("pointerdown", function (e) { e.stopPropagation(); });
+  spin.addEventListener("input", function () {
+    spinSpeed = Number(spin.value) / 100 * 0.008;
+  });
+}
+const zoom = document.getElementById("zoom");
+if (zoom) {
+  zoom.addEventListener("pointerdown", function (e) { e.stopPropagation(); zoomHeld = true; });
+  zoom.addEventListener("pointerup", function () { zoomHeld = false; });
+  zoom.addEventListener("pointercancel", function () { zoomHeld = false; });
+  zoom.addEventListener("input", function () {
+    zoomHeld = true;
+    zoomControl = Number(zoom.value) / 100;
+  });
+  zoom.addEventListener("change", function () { zoomHeld = false; });
+}
 const initial = new URLSearchParams(location.search).get("city") || "johannesburg";
 selectCity(initial, false);
 </script>
