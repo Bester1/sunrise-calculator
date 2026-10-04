@@ -1227,7 +1227,11 @@ function initGlobe() {
     }
     var side = levelDir(screenRight);
     var ahead = levelDir(camera.position.clone().negate());
-    var sunAngle = now.getTime() / 1000 * (Math.PI * 2 / 28);
+    if (sunGlow.angle == null) { sunGlow.angle = 0; sunGlow.rush = 1; sunGlow.then = now.getTime(); }
+    var sunDt = Math.min(0.05, Math.max(0, (now.getTime() - sunGlow.then) / 1000));
+    sunGlow.then = now.getTime();
+    sunGlow.angle += (Math.PI * 2 / 28) * (sunGlow.rush ? 5 : 1) * sunDt;
+    var sunAngle = sunGlow.angle;
     var sunRadius = Math.max(camDist + 1.4, camDist * 1.65);
     var sunPos = new THREE.Vector3();
     sunPos.addScaledVector(side, -Math.cos(sunAngle));
@@ -1238,6 +1242,15 @@ function initGlobe() {
     var toSun = sunPos.clone().sub(camera.position);
     var sunDist = toSun.length() || 1;
     var facing = toSun.dot(screenForward) / sunDist;
+    var ndcX = 0, ndcY = 2;
+    if (facing > 0) {
+      var vHalf = camera.fov * Math.PI / 360;
+      var span = Math.tan(vHalf) * Math.max(0.2, camera.aspect);
+      ndcX = toSun.dot(screenRight) / (facing * sunDist) / span;
+      ndcY = toSun.dot(screenUp) / (facing * sunDist) / Math.tan(vHalf);
+    }
+    if (facing < 0.2 || Math.abs(ndcX) > 1.12 || Math.abs(ndcY) > 1.12) sunGlow.rush = 1;
+    else if (facing > 0.4 && Math.abs(ndcX) < 1.05 && Math.abs(ndcY) < 1.05) sunGlow.rush = 0;
     var ray = toSun.clone().multiplyScalar(1 / sunDist);
     var tCenter = -camera.position.dot(ray);
     var miss = camera.position.clone().addScaledVector(ray, Math.max(0, tCenter)).length();
