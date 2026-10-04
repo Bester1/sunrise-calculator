@@ -79,7 +79,7 @@
   h1 {
     font-family: "Space Grotesk", sans-serif;
     font-weight: 600; font-size: 26px;
-    margin: 2px 0 8px; letter-spacing: -0.03em; line-height: 1.1;
+    margin: 2px 0 2px; letter-spacing: -0.03em; line-height: 1.1;
   }
   .card {
     width: 100%;
@@ -126,9 +126,11 @@
   .note { margin-top: 6px; font-size: 11px; color: rgba(255,255,255,.55); line-height: 1.35; }
   .golden-link { margin: 10px 0 0; font-size: 13px; }
   .golden-link a { color: #ffd7a8; }
-  .city-name { font-size: 14px; color: rgba(255,255,255,.82); margin: 0 0 8px; }
+  .city-name { font-size: 14px; color: rgba(255,255,255,.82); margin: 0 0 2px; }
 
   .controls { display: grid; gap: 8px; margin: 8px 0 2px; }
+  .controls.city-bar { margin: 0 0 2px; }
+  .controls.city-bar select { width: auto; flex: 1; }
   .controls label {
     display: flex; align-items: center; justify-content: space-between; gap: 10px;
     font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: rgba(255,255,255,.7);
@@ -244,11 +246,17 @@
   }
   .wrap.is-min .card { height: auto; overflow: hidden; }
   .card-head {
-    display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    column-gap: 8px;
+    row-gap: 2px;
   }
+  .card-head > .city-bar { grid-column: 1 / -1; margin: 0; }
   .card-titles { display: block; min-width: 0; }
   .card-min { display: inline-flex; flex: none; margin-top: 4px; }
   .wrap.is-min .card > :not(.card-head) { display: none; }
+  .wrap.is-min .city-bar { display: none; }
   .seo { display: none; }
   h1 { font-size: 20px; }
   .count { font-size: 28px; }
@@ -288,9 +296,7 @@
     <p class="city-name" id="city-name">Antananarivo</p>
       </div>
       <button class="card-min" type="button" aria-expanded="true">Hide</button>
-    </div>
-    <div class="controls">
-
+      <div class="controls city-bar">
       <label>City
         <select id="city-picker" aria-label="City">
           <option value="accra">Accra</option>
@@ -395,6 +401,7 @@
           <option value="windhoek">Windhoek</option>
         </select>
       </label>
+      </div>
     </div>
     <p class="golden-link"><a id="golden-link" href="golden-hour.html?city=antananarivo">Golden hour</a></p>
     <details class="fold" open>
