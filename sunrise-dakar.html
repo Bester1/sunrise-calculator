@@ -124,6 +124,8 @@
   }
   .now { margin-top: 10px; font-size: 13px; font-variant-numeric: tabular-nums; color: rgba(255,255,255,.8); }
   .note { margin-top: 6px; font-size: 11px; color: rgba(255,255,255,.55); line-height: 1.35; }
+  .golden-link { margin: 10px 0 0; font-size: 13px; }
+  .golden-link a { color: #ffd7a8; }
   .city-name { font-size: 14px; color: rgba(255,255,255,.82); margin: 0 0 8px; }
 
   .controls { display: grid; gap: 8px; margin: 8px 0 2px; }
@@ -341,6 +343,7 @@
     </div>
     <p class="now" id="now"></p>
     <p class="note" id="note">Times and the globe are set to Dakar. Shown in GMT.</p>
+    <p class="golden-link"><a id="golden-link" href="golden-hour.html?city=dakar">Golden hour</a></p>
     <div class="month">
       <h2 id="month-title">This month</h2>
       <div class="month-scroll">
@@ -616,6 +619,8 @@ function applyCity(slug, push) {
   if (nameEl) nameEl.textContent = c[0];
   const sel = document.getElementById("city-picker");
   if (sel && sel.value !== slug) sel.value = slug;
+  const gold = document.getElementById("golden-link");
+  if (gold) gold.href = "golden-hour.html?city=" + slug;
   const note = document.getElementById("note");
   if (note) note.textContent = "Times and the globe are set to " + c[0] + ".";
   if (push) {
