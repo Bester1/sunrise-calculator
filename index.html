@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="canonical" href="https://sunrise.local/index.html">
+<link rel="canonical" href="https://sunrise-calculator.netlify.app/index.html">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -259,9 +259,18 @@
   .rocks summary, .rocks-body { font-size: 11px; }
 }
 </style>
-<title>Sunrise and Sunset Times</title>
-<meta name="description" content="Live sunrise and sunset times on a day-and-night Earth. Johannesburg on 4 October 2026: sunrise 05:44, sunset 18:08 (SAST).">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What time is sunrise today?", "acceptedAnswer": {"@type": "Answer", "text": "On 4 October 2026 in Johannesburg the sun rises at 05:44 and sets at 18:08 (SAST). If you allow location, the clock switches to your coordinates."}}, {"@type": "Question", "name": "When is sunrise in December in Johannesburg?", "acceptedAnswer": {"@type": "Answer", "text": "On 21 December 2026 sunrise in Johannesburg is 05:12 and sunset is 18:59 (SAST)."}}, {"@type": "Question", "name": "How long is the day in Johannesburg?", "acceptedAnswer": {"@type": "Answer", "text": "On 4 October 2026 the day in Johannesburg lasts 12 hours 24 minutes. On 21 December 2026 it lasts 13 hours 47 minutes."}}]}</script>
+<title>Sunrise time calculator | sunset, golden hour, day length</title>
+<meta name="description" content="Live sunrise and sunset times, golden hour, day length, and solar noon. Defaults to Johannesburg, with a page for each city.">
+<meta property="og:title" content="Sunrise time calculator | sunset, golden hour, day length">
+<meta property="og:description" content="Live sunrise and sunset times, golden hour, day length, and solar noon. Defaults to Johannesburg, with a page for each city.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sunrise-calculator.netlify.app/index.html">
+<meta property="og:image" content="https://sunrise-calculator.netlify.app/og-image.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sunrise time calculator | sunset, golden hour, day length">
+<meta name="twitter:description" content="Live sunrise and sunset times, golden hour, day length, and solar noon. Defaults to Johannesburg, with a page for each city.">
+<meta name="twitter:image" content="https://sunrise-calculator.netlify.app/og-image.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Sunrise time calculator | sunset, golden hour, day length","description":"Live sunrise and sunset times, golden hour, day length, and solar noon. Defaults to Johannesburg, with a page for each city.","url":"https://sunrise-calculator.netlify.app/index.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://sunrise-calculator.netlify.app/index.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What does this sunrise calculator show?","acceptedAnswer":{"@type":"Answer","text":"It shows live sunrise time, sunset time, golden hour, day length, and solar noon for the selected place. Times are computed in your browser for the visitor's date using a standard sunrise zenith of 90.833 degrees."}},{"@type":"Question","name":"Why does the calculator default to Johannesburg?","acceptedAnswer":{"@type":"Answer","text":"The home page defaults to Johannesburg so you see times immediately. You can pick another city from the list or allow location to use your coordinates."}},{"@type":"Question","name":"What does golden hour mean here?","acceptedAnswer":{"@type":"Answer","text":"Golden hour on this site means the light from civil dawn to sunrise in the morning, and from sunset to civil dusk in the evening."}},{"@type":"Question","name":"What are day length and solar noon?","acceptedAnswer":{"@type":"Answer","text":"Day length is the time from sunrise to sunset. Solar noon is when the sun reaches its highest point in the sky for that day at the place's longitude."}}]},{"@type":"ImageObject","contentUrl":"https://sunrise-calculator.netlify.app/og-image.png"},{"@type":"WebApplication","name":"Sunrise Calculator","applicationCategory":"Utilities","offers":{"@type":"Offer","price":"0"},"url":"https://sunrise-calculator.netlify.app/index.html","screenshot":"https://sunrise-calculator.netlify.app/og-image.png"}]}</script>
 </head>
 <body>
 <div id="sky"></div>
@@ -386,12 +395,6 @@
           <option value="windhoek">Windhoek</option>
         </select>
       </label>
-      <label>Spin
-        <input id="spin" type="range" min="0" max="100" value="9" aria-label="Globe rotation speed">
-      </label>
-      <label>Zoom
-        <input id="zoom" type="range" min="0" max="100" value="0" aria-label="Globe zoom">
-      </label>
     </div>
     <p class="golden-link"><a id="golden-link" href="golden-hour.html">Golden hour</a></p>
     <details class="fold" open>
@@ -403,6 +406,14 @@
     <div class="times">
       <div class="pill"><span class="label">Sunrise</span><b id="rise">05:44</b></div>
       <div class="pill"><span class="label">Sunset</span><b id="set">18:08</b></div>
+    </div>
+    <div class="controls">
+      <label>Spin
+        <input id="spin" type="range" min="0" max="100" value="9" aria-label="Globe rotation speed">
+      </label>
+      <label>Zoom
+        <input id="zoom" type="range" min="0" max="100" value="0" aria-label="Globe zoom">
+      </label>
     </div>
     <p class="now" id="now"></p>
     <p class="note" id="note">Using Johannesburg until location is allowed.</p>
@@ -430,11 +441,12 @@
 <details class="seo" open>
   <summary>Cities, FAQ, and articles</summary>
   <div class="seo-body">
-    <p>The times in the card are written into the page for Johannesburg on 4 October 2026. Allowing location replaces them.</p>
+    <p>Johannesburg sits at about 26.2°S, so there is a clear seasonal swing in sunrise and sunset. Summer is around December and winter around June. This page shows sunrise time, sunset time, golden hour, day length, and solar noon for Johannesburg, computed in your browser from the city's coordinates.</p>
     <h2>FAQ</h2>
     <ol><li><strong>What time is sunrise today?</strong> On 4 October 2026 in Johannesburg the sun rises at 05:44 and sets at 18:08 (SAST). If you allow location, the clock switches to your coordinates.</li><li><strong>When is sunrise in December in Johannesburg?</strong> On 21 December 2026 sunrise in Johannesburg is 05:12 and sunset is 18:59 (SAST).</li><li><strong>How long is the day in Johannesburg?</strong> On 4 October 2026 the day in Johannesburg lasts 12 hours 24 minutes. On 21 December 2026 it lasts 13 hours 47 minutes.</li></ol>
     <h2>Cities</h2>
     <p><a href="sunrise-accra.html">Accra</a>, <a href="sunrise-addis-ababa.html">Addis Ababa</a>, <a href="sunrise-algiers.html">Algiers</a>, <a href="sunrise-amsterdam.html">Amsterdam</a>, <a href="sunrise-antananarivo.html">Antananarivo</a>, <a href="sunrise-athens.html">Athens</a>, <a href="sunrise-auckland.html">Auckland</a>, <a href="sunrise-bangkok.html">Bangkok</a>, <a href="sunrise-barcelona.html">Barcelona</a>, <a href="sunrise-beijing.html">Beijing</a>, <a href="sunrise-bengaluru.html">Bengaluru</a>, <a href="sunrise-berlin.html">Berlin</a>, <a href="sunrise-bloemfontein.html">Bloemfontein</a>, <a href="sunrise-bogota.html">Bogotá</a>, <a href="sunrise-boston.html">Boston</a>, <a href="sunrise-brussels.html">Brussels</a>, <a href="sunrise-budapest.html">Budapest</a>, <a href="sunrise-buenos-aires.html">Buenos Aires</a>, <a href="sunrise-cairo.html">Cairo</a>, <a href="sunrise-cape-town.html">Cape Town</a>, <a href="sunrise-caracas.html">Caracas</a>, <a href="sunrise-casablanca.html">Casablanca</a>, <a href="sunrise-chicago.html">Chicago</a>, <a href="sunrise-colombo.html">Colombo</a>, <a href="sunrise-copenhagen.html">Copenhagen</a>, <a href="sunrise-dakar.html">Dakar</a>, <a href="sunrise-dar-es-salaam.html">Dar es Salaam</a>, <a href="sunrise-delhi.html">Delhi</a>, <a href="sunrise-denver.html">Denver</a>, <a href="sunrise-dhaka.html">Dhaka</a>, <a href="sunrise-dubai.html">Dubai</a>, <a href="sunrise-dublin.html">Dublin</a>, <a href="sunrise-durban.html">Durban</a>, <a href="sunrise-george.html">George</a>, <a href="sunrise-gqeberha.html">Gqeberha</a>, <a href="sunrise-hanoi.html">Hanoi</a>, <a href="sunrise-havana.html">Havana</a>, <a href="sunrise-hong-kong.html">Hong Kong</a>, <a href="sunrise-honolulu.html">Honolulu</a>, <a href="sunrise-houston.html">Houston</a>, <a href="sunrise-istanbul.html">Istanbul</a>, <a href="sunrise-jakarta.html">Jakarta</a>, <a href="sunrise-johannesburg.html">Johannesburg</a>, <a href="sunrise-kampala.html">Kampala</a>, <a href="sunrise-karachi.html">Karachi</a>, <a href="sunrise-kathmandu.html">Kathmandu</a>, <a href="sunrise-kinshasa.html">Kinshasa</a>, <a href="sunrise-kuala-lumpur.html">Kuala Lumpur</a>, <a href="sunrise-lagos.html">Lagos</a>, <a href="sunrise-lima.html">Lima</a>, <a href="sunrise-lisbon.html">Lisbon</a>, <a href="sunrise-london.html">London</a>, <a href="sunrise-los-angeles.html">Los Angeles</a>, <a href="sunrise-lusaka.html">Lusaka</a>, <a href="sunrise-madrid.html">Madrid</a>, <a href="sunrise-manila.html">Manila</a>, <a href="sunrise-maputo.html">Maputo</a>, <a href="sunrise-melbourne.html">Melbourne</a>, <a href="sunrise-mexico-city.html">Mexico City</a>, <a href="sunrise-miami.html">Miami</a>, <a href="sunrise-montevideo.html">Montevideo</a>, <a href="sunrise-montreal.html">Montréal</a>, <a href="sunrise-moscow.html">Moscow</a>, <a href="sunrise-mumbai.html">Mumbai</a>, <a href="sunrise-nairobi.html">Nairobi</a>, <a href="sunrise-new-york.html">New York</a>, <a href="sunrise-osaka.html">Osaka</a>, <a href="sunrise-oslo.html">Oslo</a>, <a href="sunrise-panama-city.html">Panama City</a>, <a href="sunrise-paris.html">Paris</a>, <a href="sunrise-perth.html">Perth</a>, <a href="sunrise-pietermaritzburg.html">Pietermaritzburg</a>, <a href="sunrise-prague.html">Prague</a>, <a href="sunrise-pretoria.html">Pretoria</a>, <a href="sunrise-quito.html">Quito</a>, <a href="sunrise-reykjavik.html">Reykjavík</a>, <a href="sunrise-rio-de-janeiro.html">Rio de Janeiro</a>, <a href="sunrise-riyadh.html">Riyadh</a>, <a href="sunrise-rome.html">Rome</a>, <a href="sunrise-san-francisco.html">San Francisco</a>, <a href="sunrise-santiago.html">Santiago</a>, <a href="sunrise-sao-paulo.html">São Paulo</a>, <a href="sunrise-seoul.html">Seoul</a>, <a href="sunrise-shanghai.html">Shanghai</a>, <a href="sunrise-singapore.html">Singapore</a>, <a href="sunrise-stellenbosch.html">Stellenbosch</a>, <a href="sunrise-stockholm.html">Stockholm</a>, <a href="sunrise-sydney.html">Sydney</a>, <a href="sunrise-taipei.html">Taipei</a>, <a href="sunrise-tehran.html">Tehran</a>, <a href="sunrise-tel-aviv.html">Tel Aviv</a>, <a href="sunrise-tokyo.html">Tokyo</a>, <a href="sunrise-toronto.html">Toronto</a>, <a href="sunrise-tunis.html">Tunis</a>, <a href="sunrise-vancouver.html">Vancouver</a>, <a href="sunrise-vienna.html">Vienna</a>, <a href="sunrise-warsaw.html">Warsaw</a>, <a href="sunrise-washington.html">Washington</a>, <a href="sunrise-wellington.html">Wellington</a>, <a href="sunrise-windhoek.html">Windhoek</a></p>
+    <p><a href="ai.html">AI-readable site summary</a></p>
     <h2>Articles</h2>
     <ul>
       <li><a href="blog/longest-day-of-the-year.html">Longest day of the year</a></li>
@@ -954,7 +966,7 @@ function initGlobe() {
       "}"
     ].join("\n")
   });
-  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.13, 64, 64), moonMat);
+  const moon = new THREE.Mesh(new THREE.SphereGeometry(0.27, 64, 64), moonMat);
   scene.add(moon);
 
   const jupiterMat = new THREE.ShaderMaterial({
@@ -996,7 +1008,7 @@ function initGlobe() {
       "}"
     ].join("\n")
   });
-  const jupiter = new THREE.Mesh(new THREE.SphereGeometry(0.20, 48, 48), jupiterMat);
+  const jupiter = new THREE.Mesh(new THREE.SphereGeometry(0.16, 48, 48), jupiterMat);
   scene.add(jupiter);
 
   const saturnMat = new THREE.ShaderMaterial({
@@ -1021,7 +1033,7 @@ function initGlobe() {
     ].join("\n")
   });
   const saturn = new THREE.Group();
-  saturn.add(new THREE.Mesh(new THREE.SphereGeometry(0.15, 48, 48), saturnMat));
+  saturn.add(new THREE.Mesh(new THREE.SphereGeometry(0.13, 48, 48), saturnMat));
   const ringMat = new THREE.ShaderMaterial({
     side: THREE.DoubleSide,
     transparent: true,
@@ -1170,23 +1182,16 @@ function initGlobe() {
 
   function frame(now) {
     const sun = solarPoint(now);
-    const m = moonPoint(now, sun);
     const s = geoVec(sun.dec, sun.subLon, 1);
     sunDir.copy(s);
-    moon.position.copy(geoVec(m.lat, m.lon, 3.15));
-    moon.lookAt(0, 0, 0);
-    var moonLen = moon.position.length() || 1.0;
-    var phase = (moon.position.x * s.x + moon.position.y * s.y + moon.position.z * s.z) / moonLen;
-    var full = (1.0 - phase) * 0.5;
-    moonMat.uniforms.fullAmt.value = full;
-    var mAng = now.getTime()/1000 * 0.35;
-    moon.position.set(Math.cos(mAng)*1.42, Math.sin(mAng)*0.2, Math.sin(mAng)*1.42);
+    var mAng = now.getTime()/1000 * 0.30;
+    moon.position.set(Math.cos(mAng)*2.00, Math.sin(mAng)*0.2, Math.sin(mAng)*2.00);
     moon.lookAt(0,0,0);
-    var jAng = now.getTime()/1000 * 0.22;
-    jupiter.position.set(Math.cos(jAng)*1.68, 0.50, Math.sin(jAng)*1.68);
+    var jAng = now.getTime()/1000 * 0.055;
+    jupiter.position.set(Math.cos(jAng)*2.20, 0.50, Math.sin(jAng)*2.20);
     jupiter.rotation.y = now.getTime()/1000 * 0.55;
-    var sAng = now.getTime()/1000 * 0.09 + 2.1;
-    saturn.position.set(Math.cos(sAng)*1.88, -0.55, Math.sin(sAng)*1.88);
+    var sAng = now.getTime()/1000 * 0.025 + 2.1;
+    saturn.position.set(Math.cos(sAng)*2.28, -0.55, Math.sin(sAng)*2.28);
     const pin = geoVec(place.lat, place.lng, 1.02);
     marker.position.copy(pin);
     markerGlow.position.copy(pin);
@@ -1230,7 +1235,7 @@ function initGlobe() {
     if (sunGlow.angle == null) { sunGlow.angle = 0; sunGlow.rush = 1; sunGlow.then = now.getTime(); }
     var sunDt = Math.min(0.05, Math.max(0, (now.getTime() - sunGlow.then) / 1000));
     sunGlow.then = now.getTime();
-    sunGlow.angle += (Math.PI * 2 / 28) * (sunGlow.rush ? 5 : 1) * sunDt;
+    sunGlow.angle += (Math.PI * 2 / 46) * (sunGlow.rush ? 5 : 1) * sunDt;
     var sunAngle = sunGlow.angle;
     var sunRadius = Math.max(camDist + 1.4, camDist * 1.65);
     var sunPos = new THREE.Vector3();
@@ -1239,6 +1244,9 @@ function initGlobe() {
     sunPos.multiplyScalar(sunRadius);
     sunBody.position.copy(sunPos);
     sunDir.copy(sunPos).normalize();
+    var moonLen = moon.position.length() || 1.0;
+    var phase = (moon.position.x * sunDir.x + moon.position.y * sunDir.y + moon.position.z * sunDir.z) / moonLen;
+    moonMat.uniforms.fullAmt.value = (1.0 - phase) * 0.5;
     var toSun = sunPos.clone().sub(camera.position);
     var sunDist = toSun.length() || 1;
     var facing = toSun.dot(screenForward) / sunDist;
@@ -1259,7 +1267,7 @@ function initGlobe() {
     if (facing < 0.25) seen *= Math.max(0, facing / 0.25);
     if (sunGlow.shown == null) sunGlow.shown = seen;
     sunGlow.shown += (seen - sunGlow.shown) * 0.04;
-    sunGlow.value = sunGlow.shown;
+    sunGlow.value = 1;
     sunBody.scale.setScalar(Math.max(0.45, sunDist / 9));
     sunBody.material.opacity = sunGlow.shown;
     sunBody.material.depthTest = true;

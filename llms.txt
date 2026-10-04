@@ -1,0 +1,34 @@
+# Sunrise Calculator
+> Static HTML calculator for sunrise, sunset, golden hour, day length, and solar noon for many cities worldwide.
+
+## What this site is
+Sunrise Calculator is a set of static HTML pages that show sun times for a chosen city. The home page defaults to Johannesburg and includes an interactive globe; city pages and the golden-hour page use the same solar math in the browser.
+
+## What data it provides
+- Sunrise and sunset times (NOAA-style zenith 90.833°)
+- Golden hour / civil dawn and civil dusk (sun 6° below the horizon)
+- Day length (sunrise to sunset)
+- Solar noon
+- Coverage for many cities via dedicated pages
+
+Times are not fixed in the HTML as permanent clock values for "today"; they are computed in the visitor's browser for the visitor's date from each page's city coordinates.
+
+## Key pages
+- Home: https://sunrise-calculator.netlify.app/index.html
+- Golden hour: https://sunrise-calculator.netlify.app/golden-hour.html
+- AI summary: https://sunrise-calculator.netlify.app/ai.html
+- Example — Cape Town: https://sunrise-calculator.netlify.app/sunrise-cape-town.html
+- Example — Johannesburg: https://sunrise-calculator.netlify.app/sunrise-johannesburg.html
+- Example — London: https://sunrise-calculator.netlify.app/sunrise-london.html
+- Example — New York: https://sunrise-calculator.netlify.app/sunrise-new-york.html
+- Example — Tokyo: https://sunrise-calculator.netlify.app/sunrise-tokyo.html
+- Example — Sydney: https://sunrise-calculator.netlify.app/sunrise-sydney.html
+- Sitemap: https://sunrise-calculator.netlify.app/sitemap.xml
+
+## City page naming
+City pages are named `sunrise-{slug}.html` (lowercase, hyphenated slug).
+
+## Blog
+- https://sunrise-calculator.netlify.app/blog/equinox-explained.html
+- https://sunrise-calculator.netlify.app/blog/longest-day-of-the-year.html
+- https://sunrise-calculator.netlify.app/blog/daylight-saving-time.html
