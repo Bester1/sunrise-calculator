@@ -1608,6 +1608,29 @@ function loadRocks() {
 tick();
 setInterval(tick, 1000);
 loadRocks();
+
+(function () {
+  function scrollFold(el) {
+    var card = el.closest(".card");
+    if (!card) {
+      el.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      return;
+    }
+    var top = el.offsetTop - 8;
+    card.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+  }
+  document.querySelectorAll("details.fold").forEach(function (el) {
+    el.addEventListener("toggle", function () {
+      if (!el.open) return;
+      if (el.classList.contains("rocks")) {
+        document.querySelectorAll("details.fold.month[open]").forEach(function (m) {
+          m.open = false;
+        });
+      }
+      requestAnimationFrame(function () { scrollFold(el); });
+    });
+  });
+})();
 </script>
 </body>
 </html>
