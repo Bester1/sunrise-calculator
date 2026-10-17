@@ -14,21 +14,21 @@ Sunrise Calculator is a set of static HTML pages that show sun times for a chose
 Times are not fixed in the HTML as permanent clock values for "today"; they are computed in the visitor's browser for the visitor's date from each page's city coordinates.
 
 ## Key pages
-- Home: https://sunrise-calculator.netlify.app/index.html
-- Golden hour: https://sunrise-calculator.netlify.app/golden-hour.html
-- AI summary: https://sunrise-calculator.netlify.app/ai.html
-- Example — Cape Town: https://sunrise-calculator.netlify.app/sunrise-cape-town.html
-- Example — Johannesburg: https://sunrise-calculator.netlify.app/sunrise-johannesburg.html
-- Example — London: https://sunrise-calculator.netlify.app/sunrise-london.html
-- Example — New York: https://sunrise-calculator.netlify.app/sunrise-new-york.html
-- Example — Tokyo: https://sunrise-calculator.netlify.app/sunrise-tokyo.html
-- Example — Sydney: https://sunrise-calculator.netlify.app/sunrise-sydney.html
-- Sitemap: https://sunrise-calculator.netlify.app/sitemap.xml
+- Home: https://sunrisecalculator.com/index.html
+- Golden hour: https://sunrisecalculator.com/golden-hour.html
+- AI summary: https://sunrisecalculator.com/ai.html
+- Example — Cape Town: https://sunrisecalculator.com/sunrise-cape-town.html
+- Example — Johannesburg: https://sunrisecalculator.com/sunrise-johannesburg.html
+- Example — London: https://sunrisecalculator.com/sunrise-london.html
+- Example — New York: https://sunrisecalculator.com/sunrise-new-york.html
+- Example — Tokyo: https://sunrisecalculator.com/sunrise-tokyo.html
+- Example — Sydney: https://sunrisecalculator.com/sunrise-sydney.html
+- Sitemap: https://sunrisecalculator.com/sitemap.xml
 
 ## City page naming
 City pages are named `sunrise-{slug}.html` (lowercase, hyphenated slug).
 
 ## Blog
-- https://sunrise-calculator.netlify.app/blog/equinox-explained.html
-- https://sunrise-calculator.netlify.app/blog/longest-day-of-the-year.html
-- https://sunrise-calculator.netlify.app/blog/daylight-saving-time.html
+- https://sunrisecalculator.com/blog/equinox-explained.html
+- https://sunrisecalculator.com/blog/longest-day-of-the-year.html
+- https://sunrisecalculator.com/blog/daylight-saving-time.html

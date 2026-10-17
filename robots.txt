@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://sunrise-calculator.netlify.app/sitemap.xml
+Sitemap: https://sunrisecalculator.com/sitemap.xml
