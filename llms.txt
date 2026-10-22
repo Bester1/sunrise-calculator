@@ -14,7 +14,7 @@ Sunrise Calculator is a set of static HTML pages that show sun times for a chose
 Times are not fixed in the HTML as permanent clock values for "today"; they are computed in the visitor's browser for the visitor's date from each page's city coordinates.
 
 ## Key pages
-- Home: https://sunrisecalculator.com/index.html
+- Home: https://sunrisecalculator.com/
 - Golden hour: https://sunrisecalculator.com/golden-hour.html
 - AI summary: https://sunrisecalculator.com/ai.html
 - Example — Cape Town: https://sunrisecalculator.com/sunrise-cape-town.html
