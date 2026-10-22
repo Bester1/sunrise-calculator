@@ -4,18 +4,18 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="canonical" href="https://sunrisecalculator.com/golden-hour.html">
-<title>Golden hour times calculator | dawn and dusk</title>
-<meta name="description" content="Calculate civil dawn, sunrise, sunset, and civil dusk for a chosen city. Morning and evening golden hour windows update in your browser.">
-<meta property="og:title" content="Golden hour times calculator | dawn and dusk">
-<meta property="og:description" content="Calculate civil dawn, sunrise, sunset, and civil dusk for a chosen city. Morning and evening golden hour windows update in your browser.">
+<title>Golden hour calculator | photo light and blue hour</title>
+<meta name="description" content="Morning and evening golden hour for a chosen city: when the sun is between 6° above and 4° below the horizon, plus blue hour. Calculated in your browser for today.">
+<meta property="og:title" content="Golden hour calculator | photo light and blue hour">
+<meta property="og:description" content="Morning and evening golden hour for a chosen city: when the sun is between 6° above and 4° below the horizon, plus blue hour. Calculated in your browser for today.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sunrisecalculator.com/golden-hour.html">
 <meta property="og:image" content="https://sunrisecalculator.com/og-image.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Golden hour times calculator | dawn and dusk">
-<meta name="twitter:description" content="Calculate civil dawn, sunrise, sunset, and civil dusk for a chosen city. Morning and evening golden hour windows update in your browser.">
+<meta name="twitter:title" content="Golden hour calculator | photo light and blue hour">
+<meta name="twitter:description" content="Morning and evening golden hour for a chosen city: when the sun is between 6° above and 4° below the horizon, plus blue hour. Calculated in your browser for today.">
 <meta name="twitter:image" content="https://sunrisecalculator.com/og-image.png">
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Golden hour times calculator | dawn and dusk","description":"Calculate civil dawn, sunrise, sunset, and civil dusk for a chosen city. Morning and evening golden hour windows update in your browser.","url":"https://sunrisecalculator.com/golden-hour.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://sunrisecalculator.com/"},{"@type":"ListItem","position":2,"name":"Golden hour","item":"https://sunrisecalculator.com/golden-hour.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is civil dawn on this page?","acceptedAnswer":{"@type":"Answer","text":"Civil dawn is when the sun is 6 degrees below the horizon before sunrise. Morning golden hour runs from civil dawn to sunrise."}},{"@type":"Question","name":"What is sunrise versus golden hour here?","acceptedAnswer":{"@type":"Answer","text":"Sunrise is when the sun's upper edge meets the horizon under a standard zenith. Golden hour is the softer light from civil dawn to sunrise, and from sunset to civil dusk."}},{"@type":"Question","name":"What is civil dusk?","acceptedAnswer":{"@type":"Answer","text":"Civil dusk is when the sun is 6 degrees below the horizon after sunset. Evening golden hour runs from sunset to civil dusk."}},{"@type":"Question","name":"How do I choose a city for golden hour times?","acceptedAnswer":{"@type":"Answer","text":"Pick a city from the selector on this page. Dawn, sunrise, sunset, and dusk are then computed in your browser for that city's coordinates and the visitor's date."}}]},{"@type":"ImageObject","contentUrl":"https://sunrisecalculator.com/og-image.png"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebPage","name":"Golden hour calculator | photo light and blue hour","description":"Morning and evening golden hour for a chosen city: when the sun is between 6° above and 4° below the horizon, plus blue hour. Calculated in your browser for today.","url":"https://sunrisecalculator.com/golden-hour.html"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://sunrisecalculator.com/"},{"@type":"ListItem","position":2,"name":"Golden hour","item":"https://sunrisecalculator.com/golden-hour.html"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is golden hour on this page?","acceptedAnswer":{"@type":"Answer","text":"Golden hour is the time when the sun is low: between 6 degrees above and 4 degrees below the horizon. The light is warm, soft and comes from the side, which is why photographers plan shoots around it. There is one window around sunrise and one around sunset."}},{"@type":"Question","name":"What is blue hour?","acceptedAnswer":{"@type":"Answer","text":"Blue hour is the twilight just outside golden hour, when the sun is between 4 and 6 degrees below the horizon. The sky turns deep blue and city lights start to show. It comes before golden hour in the morning and after it in the evening."}},{"@type":"Question","name":"Why is golden hour shorter in some cities?","acceptedAnswer":{"@type":"Answer","text":"Near the equator the sun rises and sets steeply, so it passes through the low band in about 25 to 30 minutes. Far from the equator it rises at a shallow angle, so golden hour lasts longer, and in winter at high latitudes the sun can stay low all day."}},{"@type":"Question","name":"How do I choose a city for golden hour times?","acceptedAnswer":{"@type":"Answer","text":"Pick a city from the selector on this page. The golden hour and blue hour times are then computed in your browser for that city's coordinates and today's date, in the city's own time zone."}}]},{"@type":"ImageObject","contentUrl":"https://sunrisecalculator.com/og-image.png"}]}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
@@ -193,7 +193,7 @@
   <section class="card">
     <div class="card-head">
       <div class="card-titles">
-        <p class="eyebrow">Civil twilight</p>
+        <p class="eyebrow">Photographers’ light</p>
         <h1>Golden hour</h1>
         <p class="city-name" id="city-name">Johannesburg</p>
       </div>
@@ -207,10 +207,10 @@
     <details class="fold" open>
       <summary>Today</summary>
       <div class="times">
-        <div class="pill gold"><span>Morning starts</span><b id="dawn">--:--</b></div>
+        <div class="pill gold"><span>Morning golden hour</span><b id="mgold">--:--</b></div>
         <div class="pill"><span>Sunrise</span><b id="rise">--:--</b></div>
         <div class="pill"><span>Sunset</span><b id="set">--:--</b></div>
-        <div class="pill gold"><span>Evening ends</span><b id="dusk">--:--</b></div>
+        <div class="pill gold"><span>Evening golden hour</span><b id="egold">--:--</b></div>
       </div>
       <p class="window" id="windows"></p>
       <div class="controls">
@@ -221,7 +221,7 @@
           <input id="zoom" type="range" min="0" max="100" value="0" aria-label="Globe zoom">
         </label>
       </div>
-      <p class="note" id="note">Morning runs from civil dawn, when the sun is 6° below the horizon, up to sunrise. Evening runs from sunset down to civil dusk.</p>
+      <p class="note" id="note">Golden hour is when the sun is between 6° above and 4° below the horizon. Blue hour is the twilight just outside it, from 4° to 6° below. <a href="blog/golden-hour-photography.html">How to plan a shoot around it</a>.</p>
     </details>
     <p class="back"><a id="back" href="sunrise-johannesburg.html">Sunrise in Johannesburg</a></p>
   </section>
@@ -404,22 +404,33 @@ function minsBetween(a, b) {
   if (ms < 0) ms += 86400000;
   return Math.round(ms / 60000);
 }
-function windowText(label, minutes) {
-  if (minutes == null) return label + " doesn’t happen today";
-  return label + " lasts " + minutes + " min";
+function span(a, b) {
+  if (!a || !b) return "—";
+  return fmt(a) + "–" + fmt(b);
 }
 function show() {
   const now = new Date();
-  const dawn = localSun(now, place.lat, place.lng, true, 96);
+  // Zenith angles: 84 = 6° above the horizon, 94 = 4° below, 96 = 6° below.
+  const blueAm = localSun(now, place.lat, place.lng, true, 96);
+  const goldAm = localSun(now, place.lat, place.lng, true, 94);
+  const highAm = localSun(now, place.lat, place.lng, true, 84);
   const rise = localSun(now, place.lat, place.lng, true, 90.833);
   const set = localSun(now, place.lat, place.lng, false, 90.833);
-  const dusk = localSun(now, place.lat, place.lng, false, 96);
+  const highPm = localSun(now, place.lat, place.lng, false, 84);
+  const goldPm = localSun(now, place.lat, place.lng, false, 94);
+  const bluePm = localSun(now, place.lat, place.lng, false, 96);
   document.getElementById("city-name").textContent = place.name;
-  document.getElementById("dawn").textContent = fmt(dawn);
+  const allDay = goldAm && !highAm;
+  document.getElementById("mgold").textContent = allDay ? span(goldAm, goldPm) : span(goldAm, highAm);
   document.getElementById("rise").textContent = fmt(rise);
   document.getElementById("set").textContent = fmt(set);
-  document.getElementById("dusk").textContent = fmt(dusk);
-  document.getElementById("windows").textContent = windowText("Morning", minsBetween(dawn, rise)) + ". " + windowText("Evening", minsBetween(set, dusk)) + ".";
+  document.getElementById("egold").textContent = allDay ? span(goldAm, goldPm) : span(highPm, goldPm);
+  let text;
+  if (!goldAm || !goldPm) text = "The sun doesn’t go 4° below the horizon today, so there is no clear golden hour window";
+  else if (allDay) text = "The sun stays below 6° all day, so the light is soft from sunrise to sunset";
+  else text = "Morning golden hour lasts " + minsBetween(goldAm, highAm) + " min. Evening golden hour lasts " + minsBetween(highPm, goldPm) + " min";
+  const blue = blueAm && goldAm && goldPm && bluePm ? " Blue hour: " + span(blueAm, goldAm) + " and " + span(goldPm, bluePm) + "." : "";
+  document.getElementById("windows").textContent = text + "." + blue;
   document.title = "Golden hour in " + place.name;
   const back = document.getElementById("back");
   back.href = "sunrise-" + place.slug + ".html";
